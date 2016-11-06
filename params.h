@@ -18,11 +18,17 @@
 typedef unsigned char uchar;
 typedef unsigned long long int ulint;
 typedef unsigned int uint;
+typedef long long int lint;
+typedef long double ldouble;
+
 
 uchar * vm;
 int reg[32];
+lint regl[32];
 double f_reg[32];
+ldouble f_regl[32];
 
 
+ulint PC; 
 
 #endif //_PARAMS_H

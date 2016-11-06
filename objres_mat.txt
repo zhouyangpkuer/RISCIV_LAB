@@ -1,0 +1,1803 @@
+
+matrix:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000000010000 <_ftext>:
+   10000:	00002197          	auipc	gp,0x2
+   10004:	eb018193          	addi	gp,gp,-336 # 11eb0 <_gp>
+   10008:	00001297          	auipc	t0,0x1
+   1000c:	6c028293          	addi	t0,t0,1728 # 116c8 <_fbss>
+   10010:	00109317          	auipc	t1,0x109
+   10014:	1c830313          	addi	t1,t1,456 # 1191d8 <_end>
+   10018:	0002b023          	sd	zero,0(t0)
+   1001c:	00828293          	addi	t0,t0,8
+   10020:	fe62ece3          	bltu	t0,t1,10018 <_ftext+0x18>
+   10024:	00000517          	auipc	a0,0x0
+   10028:	36c50513          	addi	a0,a0,876 # 10390 <__libc_fini_array>
+   1002c:	320000ef          	jal	1034c <atexit>
+   10030:	3bc000ef          	jal	103ec <__libc_init_array>
+   10034:	00012503          	lw	a0,0(sp)
+   10038:	00810593          	addi	a1,sp,8
+   1003c:	00000613          	li	a2,0
+   10040:	22c000ef          	jal	1026c <main>
+   10044:	31c0006f          	j	10360 <exit>
+
+0000000000010048 <_fini>:
+   10048:	00008067          	ret
+
+000000000001004c <deregister_tm_clones>:
+   1004c:	00011537          	lui	a0,0x11
+   10050:	000117b7          	lui	a5,0x11
+   10054:	6a850713          	addi	a4,a0,1704 # 116a8 <__TMC_END__>
+   10058:	6af78793          	addi	a5,a5,1711 # 116af <__TMC_END__+0x7>
+   1005c:	40e787b3          	sub	a5,a5,a4
+   10060:	00e00713          	li	a4,14
+   10064:	00f77c63          	bleu	a5,a4,1007c <deregister_tm_clones+0x30>
+   10068:	00000337          	lui	t1,0x0
+   1006c:	00030313          	mv	t1,t1
+   10070:	00030663          	beqz	t1,1007c <deregister_tm_clones+0x30>
+   10074:	6a850513          	addi	a0,a0,1704
+   10078:	00030067          	jr	t1
+   1007c:	00008067          	ret
+
+0000000000010080 <register_tm_clones>:
+   10080:	00011537          	lui	a0,0x11
+   10084:	000117b7          	lui	a5,0x11
+   10088:	6a850593          	addi	a1,a0,1704 # 116a8 <__TMC_END__>
+   1008c:	6a878793          	addi	a5,a5,1704 # 116a8 <__TMC_END__>
+   10090:	40b787b3          	sub	a5,a5,a1
+   10094:	4037d793          	srai	a5,a5,0x3
+   10098:	03f7d593          	srli	a1,a5,0x3f
+   1009c:	00f585b3          	add	a1,a1,a5
+   100a0:	4015d593          	srai	a1,a1,0x1
+   100a4:	00058c63          	beqz	a1,100bc <register_tm_clones+0x3c>
+   100a8:	00000337          	lui	t1,0x0
+   100ac:	00030313          	mv	t1,t1
+   100b0:	00030663          	beqz	t1,100bc <register_tm_clones+0x3c>
+   100b4:	6a850513          	addi	a0,a0,1704
+   100b8:	00030067          	jr	t1
+   100bc:	00008067          	ret
+
+00000000000100c0 <__do_global_dtors_aux>:
+   100c0:	ff010113          	addi	sp,sp,-16
+   100c4:	00813023          	sd	s0,0(sp)
+   100c8:	8201c783          	lbu	a5,-2016(gp) # 116d0 <_bss_start>
+   100cc:	00113423          	sd	ra,8(sp)
+   100d0:	02079663          	bnez	a5,100fc <__do_global_dtors_aux+0x3c>
+   100d4:	f79ff0ef          	jal	1004c <deregister_tm_clones>
+   100d8:	000007b7          	lui	a5,0x0
+   100dc:	00078793          	mv	a5,a5
+   100e0:	00078a63          	beqz	a5,100f4 <__do_global_dtors_aux+0x34>
+   100e4:	00011537          	lui	a0,0x11
+   100e8:	b2850513          	addi	a0,a0,-1240 # 10b28 <__fini_array_end>
+   100ec:	ffff0317          	auipc	t1,0xffff0
+   100f0:	f14300e7          	jalr	t1,-236 # 0 <_ftext-0x10000>
+   100f4:	00100793          	li	a5,1
+   100f8:	82f18023          	sb	a5,-2016(gp) # 116d0 <_bss_start>
+   100fc:	00813083          	ld	ra,8(sp)
+   10100:	00013403          	ld	s0,0(sp)
+   10104:	01010113          	addi	sp,sp,16
+   10108:	00008067          	ret
+
+000000000001010c <frame_dummy>:
+   1010c:	ff010113          	addi	sp,sp,-16
+   10110:	000007b7          	lui	a5,0x0
+   10114:	00113423          	sd	ra,8(sp)
+   10118:	00078793          	mv	a5,a5
+   1011c:	00078c63          	beqz	a5,10134 <frame_dummy+0x28>
+   10120:	00011537          	lui	a0,0x11
+   10124:	82818593          	addi	a1,gp,-2008 # 116d8 <object.3092>
+   10128:	b2850513          	addi	a0,a0,-1240 # 10b28 <__fini_array_end>
+   1012c:	ffff0317          	auipc	t1,0xffff0
+   10130:	ed4300e7          	jalr	t1,-300 # 0 <_ftext-0x10000>
+   10134:	000117b7          	lui	a5,0x11
+   10138:	f5878513          	addi	a0,a5,-168 # 10f58 <__JCR_END__>
+   1013c:	00053783          	ld	a5,0(a0)
+   10140:	00079863          	bnez	a5,10150 <frame_dummy+0x44>
+   10144:	00813083          	ld	ra,8(sp)
+   10148:	01010113          	addi	sp,sp,16
+   1014c:	f35ff06f          	j	10080 <register_tm_clones>
+   10150:	000007b7          	lui	a5,0x0
+   10154:	00078793          	mv	a5,a5
+   10158:	fe0786e3          	beqz	a5,10144 <frame_dummy+0x38>
+   1015c:	000780e7          	jalr	a5
+   10160:	fe5ff06f          	j	10144 <frame_dummy+0x38>
+
+0000000000010164 <func>:
+   10164:	fe010113          	addi	sp,sp,-32
+   10168:	00813c23          	sd	s0,24(sp)
+   1016c:	02010413          	addi	s0,sp,32
+   10170:	fe042623          	sw	zero,-20(s0)
+   10174:	0dc0006f          	j	10250 <func+0xec>
+   10178:	fe042423          	sw	zero,-24(s0)
+   1017c:	0bc0006f          	j	10238 <func+0xd4>
+   10180:	fe042223          	sw	zero,-28(s0)
+   10184:	fe042023          	sw	zero,-32(s0)
+   10188:	06c0006f          	j	101f4 <func+0x90>
+   1018c:	fe042703          	lw	a4,-32(s0)
+   10190:	fec42603          	lw	a2,-20(s0)
+   10194:	12c00693          	li	a3,300
+   10198:	02d606b3          	mul	a3,a2,a3
+   1019c:	00e68733          	add	a4,a3,a4
+   101a0:	00271713          	slli	a4,a4,0x2
+   101a4:	86818793          	addi	a5,gp,-1944 # 11718 <A>
+   101a8:	00f707b3          	add	a5,a4,a5
+   101ac:	0007a703          	lw	a4,0(a5) # 0 <_ftext-0x10000>
+   101b0:	000697b7          	lui	a5,0x69
+   101b4:	fe842683          	lw	a3,-24(s0)
+   101b8:	fe042583          	lw	a1,-32(s0)
+   101bc:	12c00613          	li	a2,300
+   101c0:	02c58633          	mul	a2,a1,a2
+   101c4:	00d606b3          	add	a3,a2,a3
+   101c8:	00269693          	slli	a3,a3,0x2
+   101cc:	55878793          	addi	a5,a5,1368 # 69558 <B>
+   101d0:	00f687b3          	add	a5,a3,a5
+   101d4:	0007a783          	lw	a5,0(a5)
+   101d8:	02f707bb          	mulw	a5,a4,a5
+   101dc:	fe442703          	lw	a4,-28(s0)
+   101e0:	00f707bb          	addw	a5,a4,a5
+   101e4:	fef42223          	sw	a5,-28(s0)
+   101e8:	fe042783          	lw	a5,-32(s0)
+   101ec:	0017879b          	addiw	a5,a5,1
+   101f0:	fef42023          	sw	a5,-32(s0)
+   101f4:	fe042703          	lw	a4,-32(s0)
+   101f8:	12b00793          	li	a5,299
+   101fc:	f8e7d8e3          	ble	a4,a5,1018c <func+0x28>
+   10200:	000c17b7          	lui	a5,0xc1
+   10204:	fe842703          	lw	a4,-24(s0)
+   10208:	fec42603          	lw	a2,-20(s0)
+   1020c:	12c00693          	li	a3,300
+   10210:	02d606b3          	mul	a3,a2,a3
+   10214:	00e68733          	add	a4,a3,a4
+   10218:	00271713          	slli	a4,a4,0x2
+   1021c:	39878793          	addi	a5,a5,920 # c1398 <C>
+   10220:	00f707b3          	add	a5,a4,a5
+   10224:	fe442703          	lw	a4,-28(s0)
+   10228:	00e7a023          	sw	a4,0(a5)
+   1022c:	fe842783          	lw	a5,-24(s0)
+   10230:	0017879b          	addiw	a5,a5,1
+   10234:	fef42423          	sw	a5,-24(s0)
+   10238:	fe842703          	lw	a4,-24(s0)
+   1023c:	12b00793          	li	a5,299
+   10240:	f4e7d0e3          	ble	a4,a5,10180 <func+0x1c>
+   10244:	fec42783          	lw	a5,-20(s0)
+   10248:	0017879b          	addiw	a5,a5,1
+   1024c:	fef42623          	sw	a5,-20(s0)
+   10250:	fec42703          	lw	a4,-20(s0)
+   10254:	12b00793          	li	a5,299
+   10258:	f2e7d0e3          	ble	a4,a5,10178 <func+0x14>
+   1025c:	00000013          	nop
+   10260:	01813403          	ld	s0,24(sp)
+   10264:	02010113          	addi	sp,sp,32
+   10268:	00008067          	ret
+
+000000000001026c <main>:
+   1026c:	fe010113          	addi	sp,sp,-32
+   10270:	00113c23          	sd	ra,24(sp)
+   10274:	00813823          	sd	s0,16(sp)
+   10278:	02010413          	addi	s0,sp,32
+   1027c:	fe042623          	sw	zero,-20(s0)
+   10280:	0a40006f          	j	10324 <main+0xb8>
+   10284:	fe042423          	sw	zero,-24(s0)
+   10288:	0840006f          	j	1030c <main+0xa0>
+   1028c:	fec42703          	lw	a4,-20(s0)
+   10290:	fe842783          	lw	a5,-24(s0)
+   10294:	02f7073b          	mulw	a4,a4,a5
+   10298:	3ef00793          	li	a5,1007
+   1029c:	02f7673b          	remw	a4,a4,a5
+   102a0:	fe842683          	lw	a3,-24(s0)
+   102a4:	fec42583          	lw	a1,-20(s0)
+   102a8:	12c00613          	li	a2,300
+   102ac:	02c58633          	mul	a2,a1,a2
+   102b0:	00d606b3          	add	a3,a2,a3
+   102b4:	00269693          	slli	a3,a3,0x2
+   102b8:	86818793          	addi	a5,gp,-1944 # 11718 <A>
+   102bc:	00f687b3          	add	a5,a3,a5
+   102c0:	00e7a023          	sw	a4,0(a5)
+   102c4:	fec42703          	lw	a4,-20(s0)
+   102c8:	fe842783          	lw	a5,-24(s0)
+   102cc:	02f7073b          	mulw	a4,a4,a5
+   102d0:	3f900793          	li	a5,1017
+   102d4:	02f7673b          	remw	a4,a4,a5
+   102d8:	000697b7          	lui	a5,0x69
+   102dc:	fe842683          	lw	a3,-24(s0)
+   102e0:	fec42583          	lw	a1,-20(s0)
+   102e4:	12c00613          	li	a2,300
+   102e8:	02c58633          	mul	a2,a1,a2
+   102ec:	00d606b3          	add	a3,a2,a3
+   102f0:	00269693          	slli	a3,a3,0x2
+   102f4:	55878793          	addi	a5,a5,1368 # 69558 <B>
+   102f8:	00f687b3          	add	a5,a3,a5
+   102fc:	00e7a023          	sw	a4,0(a5)
+   10300:	fe842783          	lw	a5,-24(s0)
+   10304:	0017879b          	addiw	a5,a5,1
+   10308:	fef42423          	sw	a5,-24(s0)
+   1030c:	fe842703          	lw	a4,-24(s0)
+   10310:	12b00793          	li	a5,299
+   10314:	f6e7dce3          	ble	a4,a5,1028c <main+0x20>
+   10318:	fec42783          	lw	a5,-20(s0)
+   1031c:	0017879b          	addiw	a5,a5,1
+   10320:	fef42623          	sw	a5,-20(s0)
+   10324:	fec42703          	lw	a4,-20(s0)
+   10328:	12b00793          	li	a5,299
+   1032c:	f4e7dce3          	ble	a4,a5,10284 <main+0x18>
+   10330:	e35ff0ef          	jal	10164 <func>
+   10334:	00000793          	li	a5,0
+   10338:	00078513          	mv	a0,a5
+   1033c:	01813083          	ld	ra,24(sp)
+   10340:	01013403          	ld	s0,16(sp)
+   10344:	02010113          	addi	sp,sp,32
+   10348:	00008067          	ret
+
+000000000001034c <atexit>:
+int
+_DEFUN (atexit,
+	(fn),
+	_VOID _EXFNPTR(fn, (_VOID)))
+{
+  return __register_exitproc (__et_atexit, fn, NULL, NULL);
+   1034c:	00050593          	mv	a1,a0
+   10350:	00000693          	li	a3,0
+   10354:	00000613          	li	a2,0
+   10358:	00000513          	li	a0,0
+   1035c:	1300006f          	j	1048c <__register_exitproc>
+
+0000000000010360 <exit>:
+ */
+
+void
+_DEFUN (exit, (code),
+	int code)
+{
+   10360:	ff010113          	addi	sp,sp,-16
+#ifdef _LITE_EXIT
+  /* Refer to comments in __atexit.c for more details of lite exit.  */
+  void __call_exitprocs _PARAMS ((int, _PTR)) __attribute__((weak));
+  if (__call_exitprocs)
+#endif
+    __call_exitprocs (code, NULL);
+   10364:	00000593          	li	a1,0
+ */
+
+void
+_DEFUN (exit, (code),
+	int code)
+{
+   10368:	00813023          	sd	s0,0(sp)
+   1036c:	00113423          	sd	ra,8(sp)
+   10370:	00050413          	mv	s0,a0
+#ifdef _LITE_EXIT
+  /* Refer to comments in __atexit.c for more details of lite exit.  */
+  void __call_exitprocs _PARAMS ((int, _PTR)) __attribute__((weak));
+  if (__call_exitprocs)
+#endif
+    __call_exitprocs (code, NULL);
+   10374:	22c000ef          	jal	105a0 <__call_exitprocs>
+
+  if (_GLOBAL_REENT->__cleanup)
+   10378:	8081b503          	ld	a0,-2040(gp) # 116b8 <_global_impure_ptr>
+   1037c:	05853783          	ld	a5,88(a0)
+   10380:	00078463          	beqz	a5,10388 <exit+0x28>
+    (*_GLOBAL_REENT->__cleanup) (_GLOBAL_REENT);
+   10384:	000780e7          	jalr	a5
+  _exit (code);
+   10388:	00040513          	mv	a0,s0
+   1038c:	760000ef          	jal	10aec <_exit>
+
+0000000000010390 <__libc_fini_array>:
+extern void _fini (void);
+
+/* Run all the cleanup routines.  */
+void
+__libc_fini_array (void)
+{
+   10390:	fe010113          	addi	sp,sp,-32
+   10394:	00813823          	sd	s0,16(sp)
+   10398:	00913423          	sd	s1,8(sp)
+  size_t count;
+  size_t i;
+  
+  count = __fini_array_end - __fini_array_start;
+   1039c:	00011437          	lui	s0,0x11
+   103a0:	000114b7          	lui	s1,0x11
+   103a4:	b2048493          	addi	s1,s1,-1248 # 10b20 <__init_array_end>
+   103a8:	b2840413          	addi	s0,s0,-1240 # 10b28 <__fini_array_end>
+   103ac:	40940433          	sub	s0,s0,s1
+   103b0:	ff840793          	addi	a5,s0,-8
+extern void _fini (void);
+
+/* Run all the cleanup routines.  */
+void
+__libc_fini_array (void)
+{
+   103b4:	00113c23          	sd	ra,24(sp)
+  size_t count;
+  size_t i;
+  
+  count = __fini_array_end - __fini_array_start;
+   103b8:	40345413          	srai	s0,s0,0x3
+   103bc:	009784b3          	add	s1,a5,s1
+  for (i = count; i > 0; i--)
+   103c0:	00040c63          	beqz	s0,103d8 <__libc_fini_array+0x48>
+    __fini_array_start[i-1] ();
+   103c4:	0004b783          	ld	a5,0(s1)
+   103c8:	fff40413          	addi	s0,s0,-1
+   103cc:	ff848493          	addi	s1,s1,-8
+   103d0:	000780e7          	jalr	a5
+{
+  size_t count;
+  size_t i;
+  
+  count = __fini_array_end - __fini_array_start;
+  for (i = count; i > 0; i--)
+   103d4:	fe0418e3          	bnez	s0,103c4 <__libc_fini_array+0x34>
+    __fini_array_start[i-1] ();
+
+  _fini ();
+}
+   103d8:	01813083          	ld	ra,24(sp)
+   103dc:	01013403          	ld	s0,16(sp)
+   103e0:	00813483          	ld	s1,8(sp)
+   103e4:	02010113          	addi	sp,sp,32
+  
+  count = __fini_array_end - __fini_array_start;
+  for (i = count; i > 0; i--)
+    __fini_array_start[i-1] ();
+
+  _fini ();
+   103e8:	c61ff06f          	j	10048 <_fini>
+
+00000000000103ec <__libc_init_array>:
+extern void _init (void);
+
+/* Iterate over all the init routines.  */
+void
+__libc_init_array (void)
+{
+   103ec:	fe010113          	addi	sp,sp,-32
+   103f0:	00813823          	sd	s0,16(sp)
+  size_t count;
+  size_t i;
+
+  count = __preinit_array_end - __preinit_array_start;
+   103f4:	000117b7          	lui	a5,0x11
+   103f8:	00011437          	lui	s0,0x11
+extern void _init (void);
+
+/* Iterate over all the init routines.  */
+void
+__libc_init_array (void)
+{
+   103fc:	01213023          	sd	s2,0(sp)
+  size_t count;
+  size_t i;
+
+  count = __preinit_array_end - __preinit_array_start;
+   10400:	b1878793          	addi	a5,a5,-1256 # 10b18 <_etext>
+   10404:	b1840913          	addi	s2,s0,-1256 # 10b18 <_etext>
+   10408:	41278933          	sub	s2,a5,s2
+extern void _init (void);
+
+/* Iterate over all the init routines.  */
+void
+__libc_init_array (void)
+{
+   1040c:	00913423          	sd	s1,8(sp)
+   10410:	00113c23          	sd	ra,24(sp)
+  size_t count;
+  size_t i;
+
+  count = __preinit_array_end - __preinit_array_start;
+   10414:	40395913          	srai	s2,s2,0x3
+   10418:	b1840413          	addi	s0,s0,-1256
+   1041c:	00000493          	li	s1,0
+  for (i = 0; i < count; i++)
+   10420:	00090c63          	beqz	s2,10438 <__libc_init_array+0x4c>
+    __preinit_array_start[i] ();
+   10424:	00043783          	ld	a5,0(s0)
+{
+  size_t count;
+  size_t i;
+
+  count = __preinit_array_end - __preinit_array_start;
+  for (i = 0; i < count; i++)
+   10428:	00148493          	addi	s1,s1,1
+   1042c:	00840413          	addi	s0,s0,8
+    __preinit_array_start[i] ();
+   10430:	000780e7          	jalr	a5
+{
+  size_t count;
+  size_t i;
+
+  count = __preinit_array_end - __preinit_array_start;
+  for (i = 0; i < count; i++)
+   10434:	fe9918e3          	bne	s2,s1,10424 <__libc_init_array+0x38>
+    __preinit_array_start[i] ();
+
+  _init ();
+   10438:	c11ff0ef          	jal	10048 <_fini>
+
+  count = __init_array_end - __init_array_start;
+   1043c:	00011437          	lui	s0,0x11
+   10440:	000117b7          	lui	a5,0x11
+   10444:	b1840913          	addi	s2,s0,-1256 # 10b18 <_etext>
+   10448:	b2078793          	addi	a5,a5,-1248 # 10b20 <__init_array_end>
+   1044c:	41278933          	sub	s2,a5,s2
+   10450:	40395913          	srai	s2,s2,0x3
+   10454:	b1840413          	addi	s0,s0,-1256
+  for (i = 0; i < count; i++)
+   10458:	00000493          	li	s1,0
+   1045c:	00090c63          	beqz	s2,10474 <__libc_init_array+0x88>
+    __init_array_start[i] ();
+   10460:	00043783          	ld	a5,0(s0)
+    __preinit_array_start[i] ();
+
+  _init ();
+
+  count = __init_array_end - __init_array_start;
+  for (i = 0; i < count; i++)
+   10464:	00148493          	addi	s1,s1,1
+   10468:	00840413          	addi	s0,s0,8
+    __init_array_start[i] ();
+   1046c:	000780e7          	jalr	a5
+    __preinit_array_start[i] ();
+
+  _init ();
+
+  count = __init_array_end - __init_array_start;
+  for (i = 0; i < count; i++)
+   10470:	fe9918e3          	bne	s2,s1,10460 <__libc_init_array+0x74>
+    __init_array_start[i] ();
+}
+   10474:	01813083          	ld	ra,24(sp)
+   10478:	01013403          	ld	s0,16(sp)
+   1047c:	00813483          	ld	s1,8(sp)
+   10480:	00013903          	ld	s2,0(sp)
+   10484:	02010113          	addi	sp,sp,32
+   10488:	00008067          	ret
+
+000000000001048c <__register_exitproc>:
+	(type, fn, arg, d),
+	int type _AND
+	void (*fn) (void) _AND
+	void *arg _AND
+	void *d)
+{
+   1048c:	fd010113          	addi	sp,sp,-48
+   10490:	02813023          	sd	s0,32(sp)
+
+#ifndef __SINGLE_THREAD__
+  __lock_acquire_recursive(__atexit_lock);
+#endif
+
+  p = _GLOBAL_ATEXIT;
+   10494:	8081b403          	ld	s0,-2040(gp) # 116b8 <_global_impure_ptr>
+	(type, fn, arg, d),
+	int type _AND
+	void (*fn) (void) _AND
+	void *arg _AND
+	void *d)
+{
+   10498:	00913c23          	sd	s1,24(sp)
+   1049c:	00050493          	mv	s1,a0
+
+#ifndef __SINGLE_THREAD__
+  __lock_acquire_recursive(__atexit_lock);
+#endif
+
+  p = _GLOBAL_ATEXIT;
+   104a0:	1f843503          	ld	a0,504(s0)
+	(type, fn, arg, d),
+	int type _AND
+	void (*fn) (void) _AND
+	void *arg _AND
+	void *d)
+{
+   104a4:	01213823          	sd	s2,16(sp)
+   104a8:	01313423          	sd	s3,8(sp)
+   104ac:	01413023          	sd	s4,0(sp)
+   104b0:	02113423          	sd	ra,40(sp)
+   104b4:	00058913          	mv	s2,a1
+   104b8:	00060a13          	mv	s4,a2
+   104bc:	00068993          	mv	s3,a3
+#ifndef __SINGLE_THREAD__
+  __lock_acquire_recursive(__atexit_lock);
+#endif
+
+  p = _GLOBAL_ATEXIT;
+  if (p == NULL)
+   104c0:	0c050663          	beqz	a0,1058c <__register_exitproc+0x100>
+    _GLOBAL_ATEXIT = p = _GLOBAL_ATEXIT0;
+  if (p->_ind >= _ATEXIT_SIZE)
+   104c4:	00852703          	lw	a4,8(a0)
+   104c8:	01f00793          	li	a5,31
+   104cc:	0017059b          	addiw	a1,a4,1
+   104d0:	04e7d063          	ble	a4,a5,10510 <__register_exitproc+0x84>
+#ifndef _ATEXIT_DYNAMIC_ALLOC
+      return -1;
+#else
+      /* Don't dynamically allocate the atexit array if malloc is not
+	 available.  */
+      if (!malloc)
+   104d4:	000007b7          	lui	a5,0x0
+   104d8:	00078793          	mv	a5,a5
+   104dc:	0a078e63          	beqz	a5,10598 <__register_exitproc+0x10c>
+	return -1;
+
+      p = (struct _atexit *) malloc (sizeof *p);
+   104e0:	31800513          	li	a0,792
+   104e4:	ffff0317          	auipc	t1,0xffff0
+   104e8:	b1c300e7          	jalr	t1,-1252 # 0 <_ftext-0x10000>
+      if (p == NULL)
+   104ec:	0a050663          	beqz	a0,10598 <__register_exitproc+0x10c>
+	  __lock_release_recursive(__atexit_lock);
+#endif
+	  return -1;
+	}
+      p->_ind = 0;
+      p->_next = _GLOBAL_ATEXIT;
+   104f0:	1f843783          	ld	a5,504(s0)
+#ifndef __SINGLE_THREAD__
+	  __lock_release_recursive(__atexit_lock);
+#endif
+	  return -1;
+	}
+      p->_ind = 0;
+   104f4:	00052423          	sw	zero,8(a0)
+      p->_next = _GLOBAL_ATEXIT;
+      _GLOBAL_ATEXIT = p;
+#ifndef _REENT_SMALL
+      p->_on_exit_args._fntypes = 0;
+      p->_on_exit_args._is_cxa = 0;
+   104f8:	00100593          	li	a1,1
+	  __lock_release_recursive(__atexit_lock);
+#endif
+	  return -1;
+	}
+      p->_ind = 0;
+      p->_next = _GLOBAL_ATEXIT;
+   104fc:	00f53023          	sd	a5,0(a0)
+      _GLOBAL_ATEXIT = p;
+   10500:	1ea43c23          	sd	a0,504(s0)
+#ifndef _REENT_SMALL
+      p->_on_exit_args._fntypes = 0;
+   10504:	30052823          	sw	zero,784(a0)
+      p->_on_exit_args._is_cxa = 0;
+   10508:	30052a23          	sw	zero,788(a0)
+   1050c:	00000713          	li	a4,0
+   10510:	00070793          	mv	a5,a4
+      p->_on_exit_args_ptr = NULL;
+#endif
+#endif
+    }
+
+  if (type != __et_atexit)
+   10514:	02049e63          	bnez	s1,10550 <__register_exitproc+0xc4>
+      args->_fntypes |= (1 << p->_ind);
+      args->_dso_handle[p->_ind] = d;
+      if (type == __et_cxa)
+	args->_is_cxa |= (1 << p->_ind);
+    }
+  p->_fns[p->_ind++] = fn;
+   10518:	00278793          	addi	a5,a5,2 # 2 <_ftext-0xfffe>
+   1051c:	00379793          	slli	a5,a5,0x3
+   10520:	00b52423          	sw	a1,8(a0)
+   10524:	00f50533          	add	a0,a0,a5
+   10528:	01253023          	sd	s2,0(a0)
+#ifndef __SINGLE_THREAD__
+  __lock_release_recursive(__atexit_lock);
+#endif
+  return 0;
+   1052c:	00000513          	li	a0,0
+}
+   10530:	02813083          	ld	ra,40(sp)
+   10534:	02013403          	ld	s0,32(sp)
+   10538:	01813483          	ld	s1,24(sp)
+   1053c:	01013903          	ld	s2,16(sp)
+   10540:	00813983          	ld	s3,8(sp)
+   10544:	00013a03          	ld	s4,0(sp)
+   10548:	03010113          	addi	sp,sp,48
+   1054c:	00008067          	ret
+   10550:	00371813          	slli	a6,a4,0x3
+   10554:	01050833          	add	a6,a0,a6
+	  p->_on_exit_args_ptr = args;
+	}
+#else
+      args = &p->_on_exit_args;
+#endif
+      args->_fnargs[p->_ind] = arg;
+   10558:	11483823          	sd	s4,272(a6)
+      args->_fntypes |= (1 << p->_ind);
+   1055c:	31052883          	lw	a7,784(a0)
+   10560:	00100613          	li	a2,1
+   10564:	00e6173b          	sllw	a4,a2,a4
+   10568:	00e8e633          	or	a2,a7,a4
+   1056c:	30c52823          	sw	a2,784(a0)
+      args->_dso_handle[p->_ind] = d;
+   10570:	21383823          	sd	s3,528(a6)
+      if (type == __et_cxa)
+   10574:	00200693          	li	a3,2
+   10578:	fad490e3          	bne	s1,a3,10518 <__register_exitproc+0x8c>
+	args->_is_cxa |= (1 << p->_ind);
+   1057c:	31452683          	lw	a3,788(a0)
+   10580:	00e6e733          	or	a4,a3,a4
+   10584:	30e52a23          	sw	a4,788(a0)
+   10588:	f91ff06f          	j	10518 <__register_exitproc+0x8c>
+  __lock_acquire_recursive(__atexit_lock);
+#endif
+
+  p = _GLOBAL_ATEXIT;
+  if (p == NULL)
+    _GLOBAL_ATEXIT = p = _GLOBAL_ATEXIT0;
+   1058c:	20040513          	addi	a0,s0,512
+   10590:	1ea43c23          	sd	a0,504(s0)
+   10594:	f31ff06f          	j	104c4 <__register_exitproc+0x38>
+      return -1;
+#else
+      /* Don't dynamically allocate the atexit array if malloc is not
+	 available.  */
+      if (!malloc)
+	return -1;
+   10598:	fff00513          	li	a0,-1
+   1059c:	f95ff06f          	j	10530 <__register_exitproc+0xa4>
+
+00000000000105a0 <__call_exitprocs>:
+ */
+
+void 
+_DEFUN (__call_exitprocs, (code, d),
+	int code _AND _PTR d)
+{
+   105a0:	fa010113          	addi	sp,sp,-96
+   105a4:	03413823          	sd	s4,48(sp)
+   105a8:	8081ba03          	ld	s4,-2040(gp) # 116b8 <_global_impure_ptr>
+   105ac:	03313c23          	sd	s3,56(sp)
+#ifndef _ATEXIT_DYNAMIC_ALLOC
+      break;
+#else
+      /* Don't dynamically free the atexit array if free is not
+	 available.  */
+      if (!free)
+   105b0:	000009b7          	lui	s3,0x0
+ */
+
+void 
+_DEFUN (__call_exitprocs, (code, d),
+	int code _AND _PTR d)
+{
+   105b4:	04913423          	sd	s1,72(sp)
+   105b8:	05213023          	sd	s2,64(sp)
+   105bc:	03513423          	sd	s5,40(sp)
+   105c0:	01713c23          	sd	s7,24(sp)
+   105c4:	01813823          	sd	s8,16(sp)
+   105c8:	04113c23          	sd	ra,88(sp)
+   105cc:	04813823          	sd	s0,80(sp)
+   105d0:	03613023          	sd	s6,32(sp)
+   105d4:	01913423          	sd	s9,8(sp)
+   105d8:	01a13023          	sd	s10,0(sp)
+   105dc:	00050913          	mv	s2,a0
+   105e0:	00058b93          	mv	s7,a1
+   105e4:	1f8a0a93          	addi	s5,s4,504
+	    continue;
+
+	  ind = p->_ind;
+
+	  /* Call the function.  */
+	  if (!args || (args->_fntypes & i) == 0)
+   105e8:	00100493          	li	s1,1
+#ifdef _REENT_SMALL
+      args = p->_on_exit_args_ptr;
+#else
+      args = &p->_on_exit_args;
+#endif
+      for (n = p->_ind - 1; n >= 0; n--)
+   105ec:	fff00c13          	li	s8,-1
+#ifndef _ATEXIT_DYNAMIC_ALLOC
+      break;
+#else
+      /* Don't dynamically free the atexit array if free is not
+	 available.  */
+      if (!free)
+   105f0:	00098993          	mv	s3,s3
+  __lock_acquire_recursive(__atexit_lock);
+#endif
+
+ restart:
+
+  p = _GLOBAL_ATEXIT;
+   105f4:	1f8a3b03          	ld	s6,504(s4)
+  lastp = &_GLOBAL_ATEXIT;
+  while (p)
+   105f8:	0c0b0663          	beqz	s6,106c4 <__call_exitprocs+0x124>
+   105fc:	000a8d13          	mv	s10,s5
+#ifdef _REENT_SMALL
+      args = p->_on_exit_args_ptr;
+#else
+      args = &p->_on_exit_args;
+#endif
+      for (n = p->_ind - 1; n >= 0; n--)
+   10600:	008b2403          	lw	s0,8(s6)
+   10604:	fff4041b          	addiw	s0,s0,-1
+   10608:	02045263          	bgez	s0,1062c <__call_exitprocs+0x8c>
+   1060c:	08c0006f          	j	10698 <__call_exitprocs+0xf8>
+	  int ind;
+
+	  i = 1 << n;
+
+	  /* Skip functions not from this dso.  */
+	  if (d && (!args || args->_dso_handle[n] != d))
+   10610:	02040793          	addi	a5,s0,32
+   10614:	00379793          	slli	a5,a5,0x3
+   10618:	00fb07b3          	add	a5,s6,a5
+   1061c:	1107b783          	ld	a5,272(a5)
+   10620:	00fb8a63          	beq	s7,a5,10634 <__call_exitprocs+0x94>
+#ifdef _REENT_SMALL
+      args = p->_on_exit_args_ptr;
+#else
+      args = &p->_on_exit_args;
+#endif
+      for (n = p->_ind - 1; n >= 0; n--)
+   10624:	fff4041b          	addiw	s0,s0,-1
+   10628:	07840863          	beq	s0,s8,10698 <__call_exitprocs+0xf8>
+	  int ind;
+
+	  i = 1 << n;
+
+	  /* Skip functions not from this dso.  */
+	  if (d && (!args || args->_dso_handle[n] != d))
+   1062c:	00040713          	mv	a4,s0
+   10630:	fe0b90e3          	bnez	s7,10610 <__call_exitprocs+0x70>
+	    continue;
+
+	  /* Remove the function now to protect against the
+	     function calling exit recursively.  */
+	  fn = p->_fns[n];
+	  if (n == p->_ind - 1)
+   10634:	008b2783          	lw	a5,8(s6)
+   10638:	00371713          	slli	a4,a4,0x3
+   1063c:	00eb0733          	add	a4,s6,a4
+   10640:	fff7879b          	addiw	a5,a5,-1
+	  if (d && (!args || args->_dso_handle[n] != d))
+	    continue;
+
+	  /* Remove the function now to protect against the
+	     function calling exit recursively.  */
+	  fn = p->_fns[n];
+   10644:	01073683          	ld	a3,16(a4)
+	  if (n == p->_ind - 1)
+   10648:	0a878e63          	beq	a5,s0,10704 <__call_exitprocs+0x164>
+	    p->_ind--;
+	  else
+	    p->_fns[n] = NULL;
+   1064c:	00073823          	sd	zero,16(a4)
+
+	  /* Skip functions that have already been called.  */
+	  if (!fn)
+   10650:	fc068ae3          	beqz	a3,10624 <__call_exitprocs+0x84>
+	    continue;
+
+	  ind = p->_ind;
+
+	  /* Call the function.  */
+	  if (!args || (args->_fntypes & i) == 0)
+   10654:	310b2783          	lw	a5,784(s6)
+   10658:	0084963b          	sllw	a2,s1,s0
+
+	  /* Skip functions that have already been called.  */
+	  if (!fn)
+	    continue;
+
+	  ind = p->_ind;
+   1065c:	008b2c83          	lw	s9,8(s6)
+
+	  /* Call the function.  */
+	  if (!args || (args->_fntypes & i) == 0)
+   10660:	00f677b3          	and	a5,a2,a5
+   10664:	08078c63          	beqz	a5,106fc <__call_exitprocs+0x15c>
+	    fn ();
+	  else if ((args->_is_cxa & i) == 0)
+   10668:	314b2783          	lw	a5,788(s6)
+   1066c:	00f67633          	and	a2,a2,a5
+   10670:	08061e63          	bnez	a2,1070c <__call_exitprocs+0x16c>
+	    (*((void (*)(int, _PTR)) fn))(code, args->_fnargs[n]);
+   10674:	11073583          	ld	a1,272(a4)
+   10678:	00090513          	mv	a0,s2
+   1067c:	000680e7          	jalr	a3
+	    (*((void (*)(_PTR)) fn))(args->_fnargs[n]);
+
+	  /* The function we called call atexit and registered another
+	     function (or functions).  Call these new functions before
+	     continuing with the already registered functions.  */
+	  if (ind != p->_ind || *lastp != p)
+   10680:	008b2783          	lw	a5,8(s6)
+   10684:	f79798e3          	bne	a5,s9,105f4 <__call_exitprocs+0x54>
+   10688:	000d3783          	ld	a5,0(s10)
+   1068c:	f76794e3          	bne	a5,s6,105f4 <__call_exitprocs+0x54>
+#ifdef _REENT_SMALL
+      args = p->_on_exit_args_ptr;
+#else
+      args = &p->_on_exit_args;
+#endif
+      for (n = p->_ind - 1; n >= 0; n--)
+   10690:	fff4041b          	addiw	s0,s0,-1
+   10694:	f9841ce3          	bne	s0,s8,1062c <__call_exitprocs+0x8c>
+#ifndef _ATEXIT_DYNAMIC_ALLOC
+      break;
+#else
+      /* Don't dynamically free the atexit array if free is not
+	 available.  */
+      if (!free)
+   10698:	02098663          	beqz	s3,106c4 <__call_exitprocs+0x124>
+	break;
+
+      /* Move to the next block.  Free empty blocks except the last one,
+	 which is part of _GLOBAL_REENT.  */
+      if (p->_ind == 0 && p->_next)
+   1069c:	008b2783          	lw	a5,8(s6)
+   106a0:	06079c63          	bnez	a5,10718 <__call_exitprocs+0x178>
+   106a4:	000b3783          	ld	a5,0(s6)
+   106a8:	08078263          	beqz	a5,1072c <__call_exitprocs+0x18c>
+	  *lastp = p->_next;
+#ifdef _REENT_SMALL
+	  if (args)
+	    free (args);
+#endif
+	  free (p);
+   106ac:	000b0513          	mv	a0,s6
+      /* Move to the next block.  Free empty blocks except the last one,
+	 which is part of _GLOBAL_REENT.  */
+      if (p->_ind == 0 && p->_next)
+	{
+	  /* Remove empty block from the list.  */
+	  *lastp = p->_next;
+   106b0:	00fd3023          	sd	a5,0(s10)
+#ifdef _REENT_SMALL
+	  if (args)
+	    free (args);
+#endif
+	  free (p);
+   106b4:	ffff0317          	auipc	t1,0xffff0
+   106b8:	94c300e7          	jalr	t1,-1716 # 0 <_ftext-0x10000>
+	  p = *lastp;
+   106bc:	000d3b03          	ld	s6,0(s10)
+
+ restart:
+
+  p = _GLOBAL_ATEXIT;
+  lastp = &_GLOBAL_ATEXIT;
+  while (p)
+   106c0:	f40b10e3          	bnez	s6,10600 <__call_exitprocs+0x60>
+    }
+#ifndef __SINGLE_THREAD__
+  __lock_release_recursive(__atexit_lock);
+#endif
+
+}
+   106c4:	05813083          	ld	ra,88(sp)
+   106c8:	05013403          	ld	s0,80(sp)
+   106cc:	04813483          	ld	s1,72(sp)
+   106d0:	04013903          	ld	s2,64(sp)
+   106d4:	03813983          	ld	s3,56(sp)
+   106d8:	03013a03          	ld	s4,48(sp)
+   106dc:	02813a83          	ld	s5,40(sp)
+   106e0:	02013b03          	ld	s6,32(sp)
+   106e4:	01813b83          	ld	s7,24(sp)
+   106e8:	01013c03          	ld	s8,16(sp)
+   106ec:	00813c83          	ld	s9,8(sp)
+   106f0:	00013d03          	ld	s10,0(sp)
+   106f4:	06010113          	addi	sp,sp,96
+   106f8:	00008067          	ret
+
+	  ind = p->_ind;
+
+	  /* Call the function.  */
+	  if (!args || (args->_fntypes & i) == 0)
+	    fn ();
+   106fc:	000680e7          	jalr	a3
+   10700:	f81ff06f          	j	10680 <__call_exitprocs+0xe0>
+
+	  /* Remove the function now to protect against the
+	     function calling exit recursively.  */
+	  fn = p->_fns[n];
+	  if (n == p->_ind - 1)
+	    p->_ind--;
+   10704:	008b2423          	sw	s0,8(s6)
+   10708:	f49ff06f          	j	10650 <__call_exitprocs+0xb0>
+	  if (!args || (args->_fntypes & i) == 0)
+	    fn ();
+	  else if ((args->_is_cxa & i) == 0)
+	    (*((void (*)(int, _PTR)) fn))(code, args->_fnargs[n]);
+	  else
+	    (*((void (*)(_PTR)) fn))(args->_fnargs[n]);
+   1070c:	11073503          	ld	a0,272(a4)
+   10710:	000680e7          	jalr	a3
+   10714:	f6dff06f          	j	10680 <__call_exitprocs+0xe0>
+   10718:	000b3783          	ld	a5,0(s6)
+	  free (p);
+	  p = *lastp;
+	}
+      else
+	{
+	  lastp = &p->_next;
+   1071c:	000b0d13          	mv	s10,s6
+	  p = p->_next;
+   10720:	00078b13          	mv	s6,a5
+
+ restart:
+
+  p = _GLOBAL_ATEXIT;
+  lastp = &_GLOBAL_ATEXIT;
+  while (p)
+   10724:	ec0b1ee3          	bnez	s6,10600 <__call_exitprocs+0x60>
+   10728:	f9dff06f          	j	106c4 <__call_exitprocs+0x124>
+   1072c:	00000793          	li	a5,0
+   10730:	fedff06f          	j	1071c <__call_exitprocs+0x17c>
+
+0000000000010734 <__syscall_error>:
+
+#define syscall_errno(n, a, b, c, d) \
+        __internal_syscall(n, (long)(a), (long)(b), (long)(c), (long)(d))
+
+long __syscall_error(long a0)
+{
+   10734:	ff010113          	addi	sp,sp,-16
+   10738:	00113423          	sd	ra,8(sp)
+   1073c:	00813023          	sd	s0,0(sp)
+   10740:	00050413          	mv	s0,a0
+  errno = -a0;
+   10744:	3c4000ef          	jal	10b08 <__errno>
+  return -1;
+}
+   10748:	00813083          	ld	ra,8(sp)
+#define syscall_errno(n, a, b, c, d) \
+        __internal_syscall(n, (long)(a), (long)(b), (long)(c), (long)(d))
+
+long __syscall_error(long a0)
+{
+  errno = -a0;
+   1074c:	408007bb          	negw	a5,s0
+   10750:	00f52023          	sw	a5,0(a0)
+  return -1;
+}
+   10754:	00013403          	ld	s0,0(sp)
+   10758:	fff00513          	li	a0,-1
+   1075c:	01010113          	addi	sp,sp,16
+   10760:	00008067          	ret
+
+0000000000010764 <open>:
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+  register long a3 asm("a3") = _a3;
+   10764:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   10768:	40000893          	li	a7,1024
+
+  asm volatile ("scall\n"
+   1076c:	00000073          	ecall
+   10770:	fc0542e3          	bltz	a0,10734 <__syscall_error>
+
+int open(const char* name, int flags, int mode)
+{
+  return syscall_errno(SYS_open, name, flags, mode, 0);
+}
+   10774:	0005051b          	sext.w	a0,a0
+   10778:	00008067          	ret
+
+000000000001077c <openat>:
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+  register long a3 asm("a3") = _a3;
+  register long a7 asm("a7") = n;
+   1077c:	03800893          	li	a7,56
+
+  asm volatile ("scall\n"
+   10780:	00000073          	ecall
+   10784:	fa0548e3          	bltz	a0,10734 <__syscall_error>
+//------------------------------------------------------------------------
+// Open file relative to given directory
+int openat(int dirfd, const char* name, int flags, int mode)
+{
+  return syscall_errno(SYS_openat, dirfd, name, flags, mode);
+}
+   10788:	0005051b          	sext.w	a0,a0
+   1078c:	00008067          	ret
+
+0000000000010790 <lseek>:
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+  register long a3 asm("a3") = _a3;
+   10790:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   10794:	03e00893          	li	a7,62
+
+  asm volatile ("scall\n"
+   10798:	00000073          	ecall
+   1079c:	f8054ce3          	bltz	a0,10734 <__syscall_error>
+// Set position in a file.
+
+off_t lseek(int file, off_t ptr, int dir)
+{
+  return syscall_errno(SYS_lseek, file, ptr, dir, 0);
+}
+   107a0:	00008067          	ret
+
+00000000000107a4 <read>:
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+  register long a3 asm("a3") = _a3;
+   107a4:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   107a8:	03f00893          	li	a7,63
+
+  asm volatile ("scall\n"
+   107ac:	00000073          	ecall
+   107b0:	f80542e3          	bltz	a0,10734 <__syscall_error>
+// Read from a file.
+
+ssize_t read(int file, void* ptr, size_t len)
+{
+  return syscall_errno(SYS_read, file, ptr, len, 0);
+}
+   107b4:	00008067          	ret
+
+00000000000107b8 <write>:
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+  register long a3 asm("a3") = _a3;
+   107b8:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   107bc:	04000893          	li	a7,64
+
+  asm volatile ("scall\n"
+   107c0:	00000073          	ecall
+   107c4:	f60548e3          	bltz	a0,10734 <__syscall_error>
+// Write to a file.
+
+ssize_t write(int file, const void* ptr, size_t len)
+{
+  return syscall_errno(SYS_write, file, ptr, len, 0);
+}
+   107c8:	00008067          	ret
+
+00000000000107cc <fstat>:
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+   107cc:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   107d0:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   107d4:	05000893          	li	a7,80
+
+  asm volatile ("scall\n"
+   107d8:	00000073          	ecall
+   107dc:	f4054ce3          	bltz	a0,10734 <__syscall_error>
+// distributed in the include subdirectory for this C library.
+
+int fstat(int file, struct stat* st)
+{
+  return syscall_errno(SYS_fstat, file, st, 0, 0);
+}
+   107e0:	0005051b          	sext.w	a0,a0
+   107e4:	00008067          	ret
+
+00000000000107e8 <stat>:
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+   107e8:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   107ec:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   107f0:	40e00893          	li	a7,1038
+
+  asm volatile ("scall\n"
+   107f4:	00000073          	ecall
+   107f8:	f2054ee3          	bltz	a0,10734 <__syscall_error>
+// Status of a file (by name).
+
+int stat(const char* file, struct stat* st)
+{
+  return syscall_errno(SYS_stat, file, st, 0, 0);
+}
+   107fc:	0005051b          	sext.w	a0,a0
+   10800:	00008067          	ret
+
+0000000000010804 <lstat>:
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+   10804:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   10808:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   1080c:	40f00893          	li	a7,1039
+
+  asm volatile ("scall\n"
+   10810:	00000073          	ecall
+   10814:	f20540e3          	bltz	a0,10734 <__syscall_error>
+// Status of a link (by name).
+
+int lstat(const char* file, struct stat* st)
+{
+  return syscall_errno(SYS_lstat, file, st, 0, 0);
+}
+   10818:	0005051b          	sext.w	a0,a0
+   1081c:	00008067          	ret
+
+0000000000010820 <fstatat>:
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+  register long a3 asm("a3") = _a3;
+  register long a7 asm("a7") = n;
+   10820:	04f00893          	li	a7,79
+
+  asm volatile ("scall\n"
+   10824:	00000073          	ecall
+   10828:	f00546e3          	bltz	a0,10734 <__syscall_error>
+// Status of a file (by name) in a given directory.
+
+int fstatat(int dirfd, const char* file, struct stat* st, int flags)
+{
+  return syscall_errno(SYS_fstatat, dirfd, file, st, flags);
+}
+   1082c:	0005051b          	sext.w	a0,a0
+   10830:	00008067          	ret
+
+0000000000010834 <access>:
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+   10834:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   10838:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   1083c:	40900893          	li	a7,1033
+
+  asm volatile ("scall\n"
+   10840:	00000073          	ecall
+   10844:	ee0548e3          	bltz	a0,10734 <__syscall_error>
+// Permissions of a file (by name).
+
+int access(const char* file, int mode)
+{
+  return syscall_errno(SYS_access, file, mode, 0, 0);
+}
+   10848:	0005051b          	sext.w	a0,a0
+   1084c:	00008067          	ret
+
+0000000000010850 <faccessat>:
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+  register long a3 asm("a3") = _a3;
+  register long a7 asm("a7") = n;
+   10850:	03000893          	li	a7,48
+
+  asm volatile ("scall\n"
+   10854:	00000073          	ecall
+   10858:	ec054ee3          	bltz	a0,10734 <__syscall_error>
+// Permissions of a file (by name) in a given directory.
+
+int faccessat(int dirfd, const char* file, int mode, int flags)
+{
+  return syscall_errno(SYS_faccessat, dirfd, file, mode, flags);
+}
+   1085c:	0005051b          	sext.w	a0,a0
+   10860:	00008067          	ret
+
+0000000000010864 <close>:
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+   10864:	00000593          	li	a1,0
+  register long a2 asm("a2") = _a2;
+   10868:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   1086c:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   10870:	03900893          	li	a7,57
+
+  asm volatile ("scall\n"
+   10874:	00000073          	ecall
+   10878:	ea054ee3          	bltz	a0,10734 <__syscall_error>
+// Close a file.
+
+int close(int file) 
+{
+  return syscall_errno(SYS_close, file, 0, 0, 0);
+}
+   1087c:	0005051b          	sext.w	a0,a0
+   10880:	00008067          	ret
+
+0000000000010884 <link>:
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+  register long a2 asm("a2") = _a2;
+   10884:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   10888:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   1088c:	40100893          	li	a7,1025
+
+  asm volatile ("scall\n"
+   10890:	00000073          	ecall
+   10894:	ea0540e3          	bltz	a0,10734 <__syscall_error>
+// Establish a new name for an existing file.
+
+int link(const char* old_name, const char* new_name)
+{
+  return syscall_errno(SYS_link, old_name, new_name, 0, 0);
+}
+   10898:	0005051b          	sext.w	a0,a0
+   1089c:	00008067          	ret
+
+00000000000108a0 <unlink>:
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+   108a0:	00000593          	li	a1,0
+  register long a2 asm("a2") = _a2;
+   108a4:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   108a8:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   108ac:	40200893          	li	a7,1026
+
+  asm volatile ("scall\n"
+   108b0:	00000073          	ecall
+   108b4:	e80540e3          	bltz	a0,10734 <__syscall_error>
+// Remove a file's directory entry.
+
+int unlink(const char* name)
+{
+  return syscall_errno(SYS_unlink, name, 0, 0, 0);
+}
+   108b8:	0005051b          	sext.w	a0,a0
+   108bc:	00008067          	ret
+
+00000000000108c0 <execve>:
+//------------------------------------------------------------------------
+// Transfer control to a new process. Minimal implementation for a
+// system without processes from newlib documentation.
+
+int execve(const char* name, char* const argv[], char* const env[])
+{
+   108c0:	ff010113          	addi	sp,sp,-16
+   108c4:	00113423          	sd	ra,8(sp)
+  errno = ENOMEM;
+   108c8:	240000ef          	jal	10b08 <__errno>
+  return -1;
+}
+   108cc:	00813083          	ld	ra,8(sp)
+// Transfer control to a new process. Minimal implementation for a
+// system without processes from newlib documentation.
+
+int execve(const char* name, char* const argv[], char* const env[])
+{
+  errno = ENOMEM;
+   108d0:	00c00793          	li	a5,12
+   108d4:	00f52023          	sw	a5,0(a0)
+  return -1;
+}
+   108d8:	01010113          	addi	sp,sp,16
+   108dc:	fff00513          	li	a0,-1
+   108e0:	00008067          	ret
+
+00000000000108e4 <fork>:
+//------------------------------------------------------------------------
+// Create a new process. Minimal implementation for a system without
+// processes from newlib documentation.
+
+int fork() 
+{
+   108e4:	ff010113          	addi	sp,sp,-16
+   108e8:	00113423          	sd	ra,8(sp)
+  errno = EAGAIN;
+   108ec:	21c000ef          	jal	10b08 <__errno>
+  return -1;
+}
+   108f0:	00813083          	ld	ra,8(sp)
+// Create a new process. Minimal implementation for a system without
+// processes from newlib documentation.
+
+int fork() 
+{
+  errno = EAGAIN;
+   108f4:	00b00793          	li	a5,11
+   108f8:	00f52023          	sw	a5,0(a0)
+  return -1;
+}
+   108fc:	01010113          	addi	sp,sp,16
+   10900:	fff00513          	li	a0,-1
+   10904:	00008067          	ret
+
+0000000000010908 <getpid>:
+// system without processes just returns 1.
+
+int getpid() 
+{
+  return 1;
+}
+   10908:	00100513          	li	a0,1
+   1090c:	00008067          	ret
+
+0000000000010910 <kill>:
+//------------------------------------------------------------------------
+// Send a signal. Minimal implementation for a system without processes
+// just causes an error.
+
+int kill(int pid, int sig)
+{
+   10910:	ff010113          	addi	sp,sp,-16
+   10914:	00113423          	sd	ra,8(sp)
+  errno = EINVAL;
+   10918:	1f0000ef          	jal	10b08 <__errno>
+  return -1;
+}
+   1091c:	00813083          	ld	ra,8(sp)
+// Send a signal. Minimal implementation for a system without processes
+// just causes an error.
+
+int kill(int pid, int sig)
+{
+  errno = EINVAL;
+   10920:	01600793          	li	a5,22
+   10924:	00f52023          	sw	a5,0(a0)
+  return -1;
+}
+   10928:	01010113          	addi	sp,sp,16
+   1092c:	fff00513          	li	a0,-1
+   10930:	00008067          	ret
+
+0000000000010934 <wait>:
+//------------------------------------------------------------------------
+// Wait for a child process. Minimal implementation for a system without
+// processes just causes an error.
+
+int wait(int* status)
+{
+   10934:	ff010113          	addi	sp,sp,-16
+   10938:	00113423          	sd	ra,8(sp)
+  errno = ECHILD;
+   1093c:	1cc000ef          	jal	10b08 <__errno>
+  return -1;
+}
+   10940:	00813083          	ld	ra,8(sp)
+// Wait for a child process. Minimal implementation for a system without
+// processes just causes an error.
+
+int wait(int* status)
+{
+  errno = ECHILD;
+   10944:	00a00793          	li	a5,10
+   10948:	00f52023          	sw	a5,0(a0)
+  return -1;
+}
+   1094c:	01010113          	addi	sp,sp,16
+   10950:	fff00513          	li	a0,-1
+   10954:	00008067          	ret
+
+0000000000010958 <isatty>:
+// Query whether output stream is a terminal. For consistency with the
+// other minimal implementations, which only support output to stdout,
+// this minimal implementation is suggested by the newlib docs.
+
+int isatty(int file)
+{
+   10958:	f8010113          	addi	sp,sp,-128
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+   1095c:	00010593          	mv	a1,sp
+  register long a2 asm("a2") = _a2;
+   10960:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   10964:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   10968:	05000893          	li	a7,80
+
+  asm volatile ("scall\n"
+   1096c:	00000073          	ecall
+   10970:	dc0542e3          	bltz	a0,10734 <__syscall_error>
+  struct stat s;
+  int ret = fstat(file,&s);
+  return ret == -1 ? -1 : !!(s.st_mode & S_IFCHR);
+   10974:	fff00793          	li	a5,-1
+// Status of an open file. The sys/stat.h header file required is
+// distributed in the include subdirectory for this C library.
+
+int fstat(int file, struct stat* st)
+{
+  return syscall_errno(SYS_fstat, file, st, 0, 0);
+   10978:	0005051b          	sext.w	a0,a0
+
+int isatty(int file)
+{
+  struct stat s;
+  int ret = fstat(file,&s);
+  return ret == -1 ? -1 : !!(s.st_mode & S_IFCHR);
+   1097c:	00f50863          	beq	a0,a5,1098c <isatty+0x34>
+   10980:	01012503          	lw	a0,16(sp)
+   10984:	40d5551b          	sraiw	a0,a0,0xd
+   10988:	00157513          	andi	a0,a0,1
+}
+   1098c:	08010113          	addi	sp,sp,128
+   10990:	00008067          	ret
+
+0000000000010994 <times>:
+
+clock_t times(struct tms* buf)
+{
+  // when called for the first time, initialize t0
+  static struct timeval t0;
+  if(t0.tv_sec == 0)
+   10994:	85818313          	addi	t1,gp,-1960 # 11708 <t0.2343>
+   10998:	00033703          	ld	a4,0(t1)
+// children's times to zero. Eventually we might want to separately
+// account for user vs system time, but for now we just return the total
+// number of cycles since starting the program.
+
+clock_t times(struct tms* buf)
+{
+   1099c:	ff010113          	addi	sp,sp,-16
+   109a0:	00050813          	mv	a6,a0
+  // when called for the first time, initialize t0
+  static struct timeval t0;
+  if(t0.tv_sec == 0)
+   109a4:	02071063          	bnez	a4,109c4 <times+0x30>
+#define SYS_dup 23
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+   109a8:	85818513          	addi	a0,gp,-1960 # 11708 <t0.2343>
+  register long a1 asm("a1") = _a1;
+   109ac:	00000593          	li	a1,0
+  register long a2 asm("a2") = _a2;
+   109b0:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   109b4:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   109b8:	0a900893          	li	a7,169
+
+  asm volatile ("scall\n"
+   109bc:	00000073          	ecall
+   109c0:	d6054ae3          	bltz	a0,10734 <__syscall_error>
+#define SYS_dup 23
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+   109c4:	00010513          	mv	a0,sp
+  register long a1 asm("a1") = _a1;
+   109c8:	00000593          	li	a1,0
+  register long a2 asm("a2") = _a2;
+   109cc:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   109d0:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   109d4:	0a900893          	li	a7,169
+
+  asm volatile ("scall\n"
+   109d8:	00000073          	ecall
+   109dc:	d4054ce3          	bltz	a0,10734 <__syscall_error>
+
+  struct timeval t;
+  gettimeofday(&t,0);
+
+  long long utime = (t.tv_sec-t0.tv_sec)*1000000 + (t.tv_usec-t0.tv_usec);
+  buf->tms_utime = utime*CLOCKS_PER_SEC/1000000;
+   109e0:	00033703          	ld	a4,0(t1)
+   109e4:	00013783          	ld	a5,0(sp)
+  buf->tms_stime = buf->tms_cstime = buf->tms_cutime = 0;
+  
+  return -1;
+}
+   109e8:	fff00513          	li	a0,-1
+  struct timeval t;
+  gettimeofday(&t,0);
+
+  long long utime = (t.tv_sec-t0.tv_sec)*1000000 + (t.tv_usec-t0.tv_usec);
+  buf->tms_utime = utime*CLOCKS_PER_SEC/1000000;
+  buf->tms_stime = buf->tms_cstime = buf->tms_cutime = 0;
+   109ec:	00083823          	sd	zero,16(a6)
+
+  struct timeval t;
+  gettimeofday(&t,0);
+
+  long long utime = (t.tv_sec-t0.tv_sec)*1000000 + (t.tv_usec-t0.tv_usec);
+  buf->tms_utime = utime*CLOCKS_PER_SEC/1000000;
+   109f0:	40e786b3          	sub	a3,a5,a4
+   109f4:	000f47b7          	lui	a5,0xf4
+   109f8:	24078793          	addi	a5,a5,576 # f4240 <C+0x32ea8>
+   109fc:	02f68733          	mul	a4,a3,a5
+   10a00:	00833683          	ld	a3,8(t1)
+   10a04:	00813783          	ld	a5,8(sp)
+  buf->tms_stime = buf->tms_cstime = buf->tms_cutime = 0;
+   10a08:	00083c23          	sd	zero,24(a6)
+   10a0c:	00083423          	sd	zero,8(a6)
+
+  struct timeval t;
+  gettimeofday(&t,0);
+
+  long long utime = (t.tv_sec-t0.tv_sec)*1000000 + (t.tv_usec-t0.tv_usec);
+  buf->tms_utime = utime*CLOCKS_PER_SEC/1000000;
+   10a10:	40d787b3          	sub	a5,a5,a3
+  buf->tms_stime = buf->tms_cstime = buf->tms_cutime = 0;
+  
+  return -1;
+}
+   10a14:	01010113          	addi	sp,sp,16
+
+  struct timeval t;
+  gettimeofday(&t,0);
+
+  long long utime = (t.tv_sec-t0.tv_sec)*1000000 + (t.tv_usec-t0.tv_usec);
+  buf->tms_utime = utime*CLOCKS_PER_SEC/1000000;
+   10a18:	00f707b3          	add	a5,a4,a5
+   10a1c:	00f83023          	sd	a5,0(a6)
+  buf->tms_stime = buf->tms_cstime = buf->tms_cutime = 0;
+  
+  return -1;
+}
+   10a20:	00008067          	ret
+
+0000000000010a24 <gettimeofday>:
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+   10a24:	00000593          	li	a1,0
+  register long a2 asm("a2") = _a2;
+   10a28:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   10a2c:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   10a30:	0a900893          	li	a7,169
+
+  asm volatile ("scall\n"
+   10a34:	00000073          	ecall
+   10a38:	ce054ee3          	bltz	a0,10734 <__syscall_error>
+// Get the current time.  Only relatively correct.
+
+int gettimeofday(struct timeval* tp, void* tzp)
+{
+  return syscall_errno(SYS_gettimeofday, tp, 0, 0, 0);
+}
+   10a3c:	0005051b          	sext.w	a0,a0
+   10a40:	00008067          	ret
+
+0000000000010a44 <ftime>:
+//----------------------------------------------------------------------
+// Get the current time.  Only relatively correct.
+
+int ftime(struct timeb* tp)
+{
+  tp->time = tp->millitm = 0;
+   10a44:	00051423          	sh	zero,8(a0)
+   10a48:	00053023          	sd	zero,0(a0)
+  return 0;
+}
+   10a4c:	00000513          	li	a0,0
+   10a50:	00008067          	ret
+
+0000000000010a54 <utime>:
+// Stub.
+
+int utime(const char* path, const struct utimbuf* times)
+{
+  return -1;
+}
+   10a54:	fff00513          	li	a0,-1
+   10a58:	00008067          	ret
+
+0000000000010a5c <chown>:
+// Stub.
+
+int chown(const char* path, uid_t owner, gid_t group)
+{
+  return -1;
+}
+   10a5c:	fff00513          	li	a0,-1
+   10a60:	00008067          	ret
+
+0000000000010a64 <chmod>:
+// Stub.
+
+int chmod(const char* path, mode_t mode)
+{
+  return -1;
+}
+   10a64:	fff00513          	li	a0,-1
+   10a68:	00008067          	ret
+
+0000000000010a6c <chdir>:
+// Stub.
+
+int chdir(const char* path)
+{
+  return -1;
+}
+   10a6c:	fff00513          	li	a0,-1
+   10a70:	00008067          	ret
+
+0000000000010a74 <getcwd>:
+// Stub.
+
+char* getcwd(char* buf, size_t size)
+{
+  return NULL;
+}
+   10a74:	00000513          	li	a0,0
+   10a78:	00008067          	ret
+
+0000000000010a7c <sysconf>:
+//----------------------------------------------------------------------
+// Get configurable system variables
+
+long sysconf(int name)
+{
+  switch(name)
+   10a7c:	00200793          	li	a5,2
+   10a80:	00f51863          	bne	a0,a5,10a90 <sysconf+0x14>
+  {
+    case _SC_CLK_TCK:
+      return CLOCKS_PER_SEC;
+   10a84:	000f4537          	lui	a0,0xf4
+   10a88:	24050513          	addi	a0,a0,576 # f4240 <C+0x32ea8>
+  }
+
+  return -1;
+}
+   10a8c:	00008067          	ret
+  {
+    case _SC_CLK_TCK:
+      return CLOCKS_PER_SEC;
+  }
+
+  return -1;
+   10a90:	fff00513          	li	a0,-1
+   10a94:	00008067          	ret
+
+0000000000010a98 <sbrk>:
+void* sbrk(ptrdiff_t incr)
+{
+  extern unsigned char _end[]; // Defined by linker
+  static unsigned long heap_end;
+
+  if (heap_end == 0)
+   10a98:	8181b703          	ld	a4,-2024(gp) # 116c8 <_fbss>
+// on this, it is useful to have a working implementation. The following
+// is suggested by the newlib docs and suffices for a standalone
+// system.
+
+void* sbrk(ptrdiff_t incr)
+{
+   10a9c:	00050793          	mv	a5,a0
+  extern unsigned char _end[]; // Defined by linker
+  static unsigned long heap_end;
+
+  if (heap_end == 0)
+   10aa0:	00071863          	bnez	a4,10ab0 <sbrk+0x18>
+    heap_end = (long)_end;
+   10aa4:	00119737          	lui	a4,0x119
+   10aa8:	1d870713          	addi	a4,a4,472 # 1191d8 <_end>
+   10aac:	80e1bc23          	sd	a4,-2024(gp) # 116c8 <_fbss>
+#define SYS_dup 23
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+   10ab0:	00e78533          	add	a0,a5,a4
+  register long a1 asm("a1") = _a1;
+   10ab4:	00000593          	li	a1,0
+  register long a2 asm("a2") = _a2;
+   10ab8:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   10abc:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   10ac0:	0d600893          	li	a7,214
+
+  asm volatile ("scall\n"
+   10ac4:	00000073          	ecall
+   10ac8:	c60546e3          	bltz	a0,10734 <__syscall_error>
+  if (syscall_errno(SYS_brk, heap_end + incr, 0, 0, 0) != heap_end + incr)
+   10acc:	8181b683          	ld	a3,-2024(gp) # 116c8 <_fbss>
+    return (void*)-1;
+   10ad0:	fff00713          	li	a4,-1
+  extern unsigned char _end[]; // Defined by linker
+  static unsigned long heap_end;
+
+  if (heap_end == 0)
+    heap_end = (long)_end;
+  if (syscall_errno(SYS_brk, heap_end + incr, 0, 0, 0) != heap_end + incr)
+   10ad4:	00d787b3          	add	a5,a5,a3
+   10ad8:	00f51663          	bne	a0,a5,10ae4 <sbrk+0x4c>
+    return (void*)-1;
+
+  heap_end += incr;
+   10adc:	80a1bc23          	sd	a0,-2024(gp) # 116c8 <_fbss>
+  return heap_end - incr;
+   10ae0:	00068713          	mv	a4,a3
+}
+   10ae4:	00070513          	mv	a0,a4
+   10ae8:	00008067          	ret
+
+0000000000010aec <_exit>:
+
+static inline long
+__internal_syscall(long n, long _a0, long _a1, long _a2, long _a3)
+{
+  register long a0 asm("a0") = _a0;
+  register long a1 asm("a1") = _a1;
+   10aec:	00000593          	li	a1,0
+  register long a2 asm("a2") = _a2;
+   10af0:	00000613          	li	a2,0
+  register long a3 asm("a3") = _a3;
+   10af4:	00000693          	li	a3,0
+  register long a7 asm("a7") = n;
+   10af8:	05d00893          	li	a7,93
+
+  asm volatile ("scall\n"
+   10afc:	00000073          	ecall
+   10b00:	c2054ae3          	bltz	a0,10734 <__syscall_error>
+   10b04:	0000006f          	j	10b04 <_exit+0x18>
+
+0000000000010b08 <__errno>:
+
+int *
+__errno ()
+{
+  return &_REENT->_errno;
+}
+   10b08:	8101b503          	ld	a0,-2032(gp) # 116c0 <_impure_ptr>
+   10b0c:	00008067          	ret

@@ -2,7 +2,7 @@
 #define _LOAD_H
 #include "params.h"
 
-char buff[100000];
+char buff[10000000];
 uchar *load(int fd)
 {
 

@@ -3,7 +3,7 @@
 #include "exec.h"
 #include "params.h"
 
-const char * filename = "hello";
+const char * filename = "matrix";
 
 using namespace std;
 int main()
@@ -12,7 +12,7 @@ int main()
 	vm = new uchar[VM_SIZE];
 
 	uchar * p_entry = load(fd);
-	printf("%x\n", p_entry);
+	// printf("%x\n", p_entry);
 
 
 	bool flag = decode(p_entry);
