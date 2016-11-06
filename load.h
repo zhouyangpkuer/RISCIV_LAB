@@ -3,7 +3,7 @@
 #include "params.h"
 
 char buff[100000];
-uchar *load(int fd, uchar * vm)
+uchar *load(int fd)
 {
 
 	Elf64_Ehdr *p_ehdr;

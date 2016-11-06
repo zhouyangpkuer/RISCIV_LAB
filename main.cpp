@@ -9,12 +9,14 @@ using namespace std;
 int main()
 {
 	int fd = open(filename, O_RDONLY);
-	uchar * vm = new uchar[VM_SIZE];
+	vm = new uchar[VM_SIZE];
 
-	uchar * p_entry = load(fd, vm);
+	uchar * p_entry = load(fd);
 	printf("%x\n", p_entry);
 
-	bool flag = decode(vm, p_entry);
+
+	bool flag = decode(p_entry);
+
 	
 	if(flag)
 		printf("\nSuccess!\n");
@@ -22,5 +24,6 @@ int main()
 		printf("\nSomething bad happens!\n");
 
 	close(fd);
+	delete[] vm;
 	return 0;
 }	

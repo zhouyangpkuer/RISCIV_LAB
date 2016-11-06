@@ -3,7 +3,7 @@
 #include "params.h"
 #include "exec.h"
 
-bool decode(uchar * vm, uchar * p_entry)
+bool decode(uchar * p_entry)
 {
 
 
