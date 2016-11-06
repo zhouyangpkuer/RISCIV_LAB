@@ -23,9 +23,10 @@ typedef long double ldouble;
 
 
 uchar * vm;
-int reg[32];
-lint regl[32];
+
+lint reg[32];
 double f_reg[32];
+
 ldouble f_regl[32];
 
 

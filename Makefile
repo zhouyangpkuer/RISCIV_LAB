@@ -3,7 +3,7 @@ PROGRAMS = main
 
 all: $(PROGRAMS)
 
-main:main.cpp
+main:main.cpp load.h decode.h exec.h params.h
 	g++ -o main main.cpp $(CPPFLAGS)
 
 clean:
