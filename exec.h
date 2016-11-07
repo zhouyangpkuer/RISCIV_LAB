@@ -17,8 +17,9 @@ bool AUIPC(uint rd, uint imm)
 {
 	int temp = imm << 12;
 	lint temp2 = (lint)temp;
-	PC += temp2;
-	reg[rd] = (lint)PC;
+	// PC += temp2;
+	reg[rd] = (lint)(PC + temp2);
+
 	return true;
 }
 
@@ -397,6 +398,112 @@ bool AND(uint rs1, uint rs2, uint rd)
 	PC += 4;
 	return true;
 }
+
+
+bool MUL(uint rs1, uint rs2, uint rd)
+{
+	lint temp = reg[rs1] * reg[rs2];
+	reg[rd] = temp & (((ulint)1 << 32) - 1);
+	PC += 4;
+	return true;
+}
+bool MULH(uint rs1, uint rs2, uint rd)
+{
+	lint temp = reg[rs1] * reg[rs2];
+	reg[rd] = (temp >> 32) & (((ulint)1 << 32) - 1);
+	PC += 4;
+	return true;
+}
+bool MULHSU(uint rs1, uint rs2, uint rd)
+{
+	lint temp = (ulint)reg[rs1] * reg[rs2];
+	reg[rd] = (temp >> 32) & (((ulint)1 << 32) - 1);
+	PC += 4;
+	return true;
+}
+bool MULHU(uint rs1, uint rs2, uint rd)
+{
+	ulint temp = (ulint)reg[rs1] * (ulint)reg[rs2];
+	reg[rd] = (temp >> 32) & (((ulint)1 << 32) - 1);
+	PC += 4;
+	return true;
+}
+bool DIV(uint rs1, uint rs2, uint rd)
+{
+	lint temp = reg[rs1] / reg[rs2];
+	reg[rd] = temp;
+	PC += 4;
+	return true;
+}
+bool DIVU(uint rs1, uint rs2, uint rd)
+{
+	ulint temp = (ulint)reg[rs1] / (ulint)reg[rs2];
+	reg[rd] = temp;
+	PC += 4;
+	return true;
+}
+bool REM(uint rs1, uint rs2, uint rd)
+{
+	lint temp = reg[rs1] % reg[rs2];
+	reg[rd] = temp;
+	PC += 4;
+	return true;	
+}
+bool REMU(uint rs1, uint rs2, uint rd)
+{
+	ulint temp = (ulint)reg[rs1] % (ulint)reg[rs2];
+	reg[rd] = temp;
+	PC += 4;
+	return true;
+}
+
+bool MULW(uint rs1, uint rs2, uint rd)
+{
+	int temp = ((int)(reg[rs1] & (((ulint)1 << 32) - 1))) * ((int)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	reg[rd] = (lint)temp;
+	PC += 4;
+	return true;
+}
+bool DIVW(uint rs1, uint rs2, uint rd)
+{
+	int temp = ((int)(reg[rs1] & (((ulint)1 << 32) - 1))) / ((int)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	reg[rd] = (lint)temp;
+	PC += 4;
+	return true;
+}
+bool DIVUW(uint rs1, uint rs2, uint rd)
+{
+	uint temp = ((uint)(reg[rs1] & (((ulint)1 << 32) - 1))) / ((uint)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	reg[rd] = (lint)(int)temp;
+	PC += 4;
+	return true;
+}
+bool REMW(uint rs1, uint rs2, uint rd)
+{
+	int temp = ((int)(reg[rs1] & (((ulint)1 << 32) - 1))) % ((int)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	reg[rd] = (lint)temp;
+	PC += 4;
+	return true;
+}
+bool REMUW(uint rs1, uint rs2, uint rd)
+{
+	uint temp = ((uint)(reg[rs1] & (((ulint)1 << 32) - 1))) % ((uint)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	reg[rd] = (lint)(int)temp;
+	PC += 4;
+	return true;
+}
+
+bool ECALL()
+{
+
+
+
+
+}
+
+
+
+
 
 
 #endif //_EXEC_H

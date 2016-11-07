@@ -30,7 +30,7 @@ bool decode(uchar * p_entry)
 	// char buff[100];
 	// reg[0] = 0;
 	reg[0] = 0;
-	reg[14] = SP;
+	reg[2] = SP;
 
 	uint INS;
 	uint * p_ins;
@@ -88,7 +88,7 @@ bool decode(uchar * p_entry)
 				break;
 				
 			//conditional branch
-			case 0b1100001:
+			case 0b1100011:
 			 	rs1 = get_part(15, 19, INS);
 			 	rs2 = get_part(20, 24, INS);
 			 	imm = 0;
@@ -318,33 +318,96 @@ bool decode(uchar * p_entry)
 							flag = SUB(rs1, rs2, rd);
 							warning(flag, "SUB");
 						}
+						//MUL
+						else if(funct7 == 0b0000001)
+						{
+							flag = MUL(rs1, rs2, rd);
+							warning(flag, "MUL");
+						}
 						else
 						{
 							printf("unknown ADD SUB funct7 %x\n", funct7);
 							exit(0);	
 						}
 						break;
-					//SLL
 					case 0b001:
-						flag = SLL(rs1, rs2, rd);
-						warning(flag, "SLL");
+						//SLL
+						if(funct7 == 0b0000000)
+						{
+							flag = SLL(rs1, rs2, rd);
+							warning(flag, "SLL");
+						}
+						//MULH
+						else if(funct7 == 0b0000001)
+						{
+							flag = MULH(rs1, rs2, rd);
+							warning(flag, "MULH");
+						}
+						else
+						{
+							printf("unknown SLL MULH funct7 %x\n", funct7);
+							exit(0);
+						}
+
 						break;
-					//SLT
 					case 0b010:
-						flag = SLT(rs1, rs2, rd);
-						warning(flag, "SLT");
+						//SLT
+						if(funct7 == 0b0000000)
+						{
+							flag = SLT(rs1, rs2, rd);
+							warning(flag, "SLT");
+						}
+						//MULHSU
+						else if(funct7 == 0b0000001)
+						{
+							flag = MULHSU(rs1, rs2, rd);
+							warning(flag, "MULHSU");
+						}
+						else
+						{
+							printf("unknown SLT MULHSU funct7 %x\n", funct7);
+							exit(0);
+						}
 						break;
 					
-					//SLTU
 					case 0b011:
-						flag = SLTU(rs1, rs2, rd);
-						warning(flag, "SLTU");
+						//SLTU
+						if(funct7 == 0b0000000)
+						{
+							flag = SLTU(rs1, rs2, rd);
+							warning(flag, "SLTU");
+						}
+						// MULHU
+						else if(funct7 == 0b0000001)
+						{
+							flag = MULHU(rs1, rs2, rd);
+							warning(flag, "MULHU");
+						}
+						else
+						{
+							printf("unknown SLTU MULHU funct7 %x\n", funct7);
+							exit(0);		
+						}
 						break;
 					
-					//XOR
 					case 0b100:
-						flag = XOR(rs1, rs2, rd);
-						warning(flag, "XOR");
+						//XOR
+						if(funct7 == 0b0000000)
+						{
+							flag = XOR(rs1, rs2, rd);
+							warning(flag, "XOR");
+						}
+						//DIV
+						else if(funct7 == 0b0000001)
+						{
+							flag = XOR(rs1, rs2, rd);
+							warning(flag, "DIV");
+						}	
+						else
+						{
+							printf("unknown XOR DIV funct7 %x\n", funct7);
+							exit(0);		
+						}
 						break;
 					
 					//SRL,SRA
@@ -359,7 +422,13 @@ bool decode(uchar * p_entry)
 						else if(funct7 == 0b0100000)
 						{
 							flag = SRA(rs1, rs2, rd);
-							warning(flag, "ADD");
+							warning(flag, "SRA");
+						}
+						//DIVU
+						else if(funct7 == 0b0000001)
+						{
+							flag = DIVU(rs1, rs2, rd);
+							warning(flag, "DIVU");	
 						}
 						else
 						{
@@ -367,29 +436,69 @@ bool decode(uchar * p_entry)
 							exit(0);
 						}
 						break;
-					//OR
 					case 0b110:
-						flag = OR(rs1, rs2, rd);
-						warning(flag, "OR");
+						//OR
+						if(funct7 == 0b0000000)
+						{
+							flag = OR(rs1, rs2, rd);
+							warning(flag, "OR");
+						}
+						//REM
+						else if(funct7 == 0b0000001)
+						{
+							flag = REM(rs1, rs2, rd);
+							warning(flag, "REM");	
+						}
+						else
+						{
+							printf("unknown OR REM funct7 %x\n", funct7);
+							exit(0);	
+						}
 						break;
 					
-					//AND
 					case 0b111:
-						flag = AND(rs1, rs2, rd);
-						warning(flag, "AND");
+						//AND
+						if(funct7 == 0b0000000)
+						{
+							flag = AND(rs1, rs2, rd);
+							warning(flag, "AND");
+						}
+						//REMU
+						else if(funct7 == 0b0000001)
+						{	
+							flag = REMU(rs1, rs2, rd);
+							warning(flag, "REMU");	
+						}
+						else
+						{
+							printf("unknown AND REMU funct7 %x\n", funct7);
+							exit(0);	
+						}
 						break;
 					
 					default:
 						printf("unknown ALU2 funct3 %x\n", funct3);
 						exit(0);
 				};
+				break;
 			//FENCE, FENCE.I
 			case 0b0001111:
-			
+				printf("FENCE and FENCE.I, uncompleted!\n");
+				exit(0);
 
-			//SCALL, SBREAK, RD
+			//ECALL, EBREAK, CSR
 			case 0b1110011:
-
+				if(INS == 0b1110011)
+				{
+					bool flag = ECALL();
+					warning(flag, "ECALL");
+				}
+				else
+				{	
+					printf("EBREAK and CSR, uncompleted!\n");
+					exit(0);
+				}
+				break;
 
 			//LWU, LD contained before;
 		
@@ -444,6 +553,7 @@ bool decode(uchar * p_entry)
 						printf("unknown ALUW funct3 %x\n", funct3);
 						exit(0);
 				};
+				break;
 
 			//ALUW2
 			case 0b0111011:
@@ -468,6 +578,12 @@ bool decode(uchar * p_entry)
 							flag = SUBW(rs1, rs2, rd);
 							warning(flag, "SUBW");
 						}
+						//MULW
+						else if(funct7 == 0b0000001)
+						{
+							flag = MULW(rs1, rs2, rd);
+							warning(flag, "MULW");
+						}
 						else
 						{
 							printf("unknown ADDW SUBW funct7 %x\n", funct7);
@@ -478,6 +594,11 @@ bool decode(uchar * p_entry)
 					case 0b001:
 						flag = SLLW(rs1, rs2, rd);
 						warning(flag, "SLLW");
+						break;
+					//DIVW
+					case 0b100:
+						flag = DIVW(rs1, rs2, rd);
+						warning(flag, "DIVW");
 						break;
 					//SRLW,SRAW
 					case 0b101:
@@ -493,23 +614,44 @@ bool decode(uchar * p_entry)
 							flag = SRAW(rs1, rs2, rd);
 							warning(flag, "SRAW");
 						}
-						else
+						//DIVUW
+						else if(funct7 == 0b0000001)
+						{
+							flag = DIVUW(rs1, rs2, rd);
+							warning(flag, "DIVUW");
+						}
+						else 
 						{
 							printf("unknown SRLW SRAW funct7 %x\n", funct7);
 							exit(0);
 						}
 						break;
-
+					//REMW
+					case 0b110:
+						flag = REMW(rs1, rs2, rd);
+						warning(flag, "REMW");
+						break;
+					//REMUW
+					case 0b111:
+						flag = REMUW(rs1, rs2, rd);
+						warning(flag, "REMUW");
+						break;
 					default:
 						printf("unknown ALUW2 funct3 %x\n", funct3);
 						exit(0);
 
 				};
+				break;
+
+			//32M contained before
+			// case 0b0110011:
+	
+			//64M
+			// case 0b0111011:
+
+			//
 
 
-	
-	
-	
 	
 	
 	
