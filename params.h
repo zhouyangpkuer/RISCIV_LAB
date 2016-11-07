@@ -11,9 +11,11 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <cstring>
+#include <string>
 
 //byte
 #define VM_SIZE 1024 * 1024 * 250
+#define SP (VM_SIZE - 1024 * 1024)
 
 typedef unsigned char uchar;
 typedef unsigned long long int ulint;
