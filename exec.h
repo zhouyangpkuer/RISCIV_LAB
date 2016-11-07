@@ -42,6 +42,9 @@ bool JALR(uint rd, uint rs1, uint imm)
 	return true;
 }
 
+
+
+
 bool BEQ(uint rs1, uint rs2, uint imm)
 {
 	if(reg[rs1] == reg[rs2])
@@ -50,7 +53,6 @@ bool BEQ(uint rs1, uint rs2, uint imm)
 		PC += 4;
 	return true;
 }
-
 bool BNE(uint rs1, uint rs2, uint imm)
 {
 	if(reg[rs1] != reg[rs2])
@@ -59,7 +61,6 @@ bool BNE(uint rs1, uint rs2, uint imm)
 		PC += 4;
 	return true;
 }
-
 bool BLT(uint rs1, uint rs2, uint imm)
 {
 	if(reg[rs1] < reg[rs2])
@@ -68,7 +69,6 @@ bool BLT(uint rs1, uint rs2, uint imm)
 		PC += 4;
 	return true;
 }
-
 bool BGE(uint rs1, uint rs2, uint imm)
 {
 	if(reg[rs1] >= reg[rs2])
@@ -77,7 +77,6 @@ bool BGE(uint rs1, uint rs2, uint imm)
 		PC += 4;
 	return true;
 }
-
 bool BLTU(uint rs1, uint rs2, uint imm)
 {
 	if((ulint)(reg[rs1]) < (ulint)(reg[rs2]))
@@ -86,7 +85,6 @@ bool BLTU(uint rs1, uint rs2, uint imm)
 		PC += 4;
 	return true;
 }
-
 bool BGEU(uint rs1, uint rs2, uint imm)
 {
 	if((ulint)(reg[rs1]) >= (ulint)(reg[rs2]))
@@ -95,6 +93,9 @@ bool BGEU(uint rs1, uint rs2, uint imm)
 		PC += 4;
 	return true;
 }
+
+
+
 
 bool LB(uint rs1, uint rd, uint imm)
 {
@@ -120,7 +121,6 @@ bool LH(uint rs1, uint rd, uint imm)
 	PC += 4;
 	return true;
 }
-
 bool LHU(uint rs1, uint rd, uint imm)
 {
 	ulint target_addr = reg[rs1] + (int)imm;
@@ -129,15 +129,32 @@ bool LHU(uint rs1, uint rd, uint imm)
 	PC += 4;
 	return true;
 }
-
 bool LW(uint rs1, uint rd, uint imm)
 {
 	ulint target_addr = reg[rs1] + (int)imm;
-	unsigned int * p = (unsigned int *)(vm + target_addr);
+	int * p = (int *)(vm + target_addr);
 	reg[rd] = (lint)(*p);
 	PC += 4;
 	return true;
 }
+bool LWU(uint rs1, uint rd, uint imm)
+{
+	ulint target_addr = reg[rs1] + (int)imm;
+	unsigned int * p = (unsigned int *)(vm + target_addr);
+	reg[rd] = (lint)(ulint)(*p);
+	PC += 4;
+	return true;		
+}
+bool LD(uint rs1, uint rd, uint imm)
+{
+	ulint target_addr = reg[rs1] + (int)imm;
+	lint * p = (lint *)(vm + target_addr);
+	reg[rd] = (*p);
+	PC += 4;
+	return true;
+}
+
+
 bool SB(uint rs1, uint rs2, uint imm)
 {
 	ulint target_addr = reg[rs1] + (int)imm;
@@ -161,13 +178,30 @@ bool SW(uint rs1, uint rs2, uint imm)
 	PC += 4;
 	return true;
 }
+bool SD(uint rs1, uint rs2, uint imm)
+{
+	ulint target_addr = reg[rs1] + (int)imm;
+	ulint *p = (ulint *)(vm + target_addr);
+	*p = (ulint)reg[rs2]; 
+	PC += 4;
+	return true;	
+}
+
+
 
 bool ADDI(uint rs1, uint rd, uint imm)
 {
 	reg[rd] = reg[rs1] + (lint)(int)imm;
 	PC += 4;	
+	return true;
 }
-
+bool ADDIW(uint rs1, uint rd, uint imm)
+{
+	lint temp = reg[rs1] + (lint)(int)imm;
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;
+}
 bool SLTI(uint rs1, uint rd, uint imm)
 {
 	if(reg[rs1] < (lint)(int)imm)
@@ -186,6 +220,10 @@ bool SLTIU(uint rs1, uint rd, uint imm)
 	PC += 4;	
 	return true;
 }
+
+
+
+
 bool XORI(uint rs1, uint rd, uint imm)
 {
 	reg[rd] = reg[rs1] ^ (lint)(int)imm;
@@ -198,7 +236,6 @@ bool ORI(uint rs1, uint rd, uint imm)
 	PC += 4;	
 	return true;
 }
-
 bool ANDI(uint rs1, uint rd, uint imm)
 {
 	reg[rd] = reg[rs1] & (lint)(int)imm;
@@ -206,9 +243,19 @@ bool ANDI(uint rs1, uint rd, uint imm)
 	return true;
 }
 
+
+
+
 bool SLLI(uint rs1, uint rd, uint shamt)
 {
 	reg[rd] = (ulint)reg[rs1] << shamt;
+	PC += 4;
+	return true;
+}
+bool SLLIW(uint rs1, uint rd, uint shamt)
+{
+	lint temp = (ulint)reg[rs1] << shamt;
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
 	PC += 4;
 	return true;
 }
@@ -218,12 +265,30 @@ bool SRLI(uint rs1, uint rd, uint shamt)
 	PC += 4;
 	return true;
 }
+bool SRLIW(uint rs1, uint rd, uint shamt)
+{
+	lint temp = (ulint)reg[rs1] >> shamt;
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;
+}
 bool SRAI(uint rs1, uint rd, uint shamt)
 {
 	reg[rd] = reg[rs1] >> shamt;
 	PC += 4;
 	return true;
 }
+bool SRAIW(uint rs1, uint rd, uint shamt)
+{
+	lint temp = reg[rs1] >> shamt;
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;
+}
+
+
+
+
 
 bool ADD(uint rs1, uint rs2, uint rd)
 {
@@ -231,18 +296,43 @@ bool ADD(uint rs1, uint rs2, uint rd)
 	PC += 4;
 	return true;
 }
+
+bool ADDW(uint rs1, uint rs2, uint rd)
+{
+	lint temp = reg[rs1] + reg[rs2];
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;	
+}
+
 bool SUB(uint rs1, uint rs2, uint rd)
 {
 	reg[rd] = reg[rs1] - reg[rs2];
 	PC += 4;
 	return true;
 }
+bool SUBW(uint rs1, uint rs2, uint rd)
+{
+	lint temp = reg[rs1] - reg[rs2];
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;	
+}
+
 bool SLL(uint rs1, uint rs2, uint rd)
 {
 	reg[rd] = (ulint)reg[rs1] << (reg[rs2] & ((1 << 5) - 1));
 	PC += 4;
 	return true;
 }
+bool SLLW(uint rs1, uint rs2, uint rd)
+{
+	lint temp = (ulint)reg[rs1] << (reg[rs2] & ((1 << 5) - 1));
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;
+}
+
 bool SLT(uint rs1, uint rs2, uint rd)
 {
 	if(reg[rs1] < reg[rs2])
@@ -273,12 +363,28 @@ bool SRL(uint rs1, uint rs2, uint rd)
 	PC += 4;
 	return true;
 }
+bool SRLW(uint rs1, uint rs2, uint rd)
+{
+	lint temp = (ulint)reg[rs1] >> (reg[rs2] & ((1 << 5) - 1));
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;	
+}
+
 bool SRA(uint rs1, uint rs2, uint rd)
 {
 	reg[rd] = reg[rs1] >> (reg[rs2] & ((1 << 5) - 1));
 	PC += 4;
 	return true;
 }
+bool SRAW(uint rs1, uint rs2, uint rd)
+{
+	lint temp = reg[rs1] >> (reg[rs2] & ((1 << 5) - 1));
+	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	PC += 4;
+	return true;	
+}
+
 bool OR(uint rs1, uint rs2, uint rd)
 {
 	reg[rd] = reg[rs1] | reg[rs2];
@@ -291,4 +397,6 @@ bool AND(uint rs1, uint rs2, uint rd)
 	PC += 4;
 	return true;
 }
+
+
 #endif //_EXEC_H

@@ -171,12 +171,14 @@ bool decode(uchar * p_entry)
 						break;
 					//LWU
 					case 0b110:
-
-
+						flag = LWU(rs1, rd, imm);
+						warning(flag, "LWU");
+						break;
 					//LD
 					case 0b011:
-
-
+						flag = LD(rs1, rd, imm);
+						warning(flag, "LD");
+						break;
 
 					//theoretically impossible 
 					default:
@@ -211,8 +213,9 @@ bool decode(uchar * p_entry)
 						break;
 					//SD
 					case 0b011:
-
-
+						flag = SD(rs1, rs2, imm);
+						warning(flag, "SD");
+						break;
 
 					default:
 						printf("unknown store funct3 %x\n", funct3);
@@ -399,11 +402,109 @@ bool decode(uchar * p_entry)
 
 			//ALUW
 			case 0b0011011:
-
+				rs1 = get_part(15, 19, INS);
+				rd = get_part(7, 11, INS);
+				funct3 = get_part(12, 14, INS);
+				funct7 = get_part(25, 31, INS);
+				imm = get_part(20, 31, INS);
+				shamt = get_part(20, 24, INS);
+				switch(funct3)
+				{
+					//ADDIW
+					case 0b000:
+						flag = ADDIW(rs1, rd, imm);
+						warning(flag, "ADDIW");
+						break;
+					//SLLIW
+					case 0b001:
+						flag = SLLIW(rs1, rd, shamt);
+						warning(flag, "SLLIW");
+						break;
+					//SRLIW,SRAIW
+					case 0b101:
+						//SRLIW
+						if(funct7 == 0b0000000)
+						{
+							flag = SRLIW(rs1, rd, shamt);
+							warning(flag, "SRLIW");
+						}
+						//SRAIW
+						else if(funct7 == 0b0100000)
+						{
+							flag = SRAIW(rs1, rd, shamt);
+							warning(flag, "SRAIW");
+						}
+						else
+						{
+							printf("unknown SRLIW SRAIW funct7 %x\n", funct7);
+							exit(0);
+						}
+						break;
+					default:
+						printf("unknown ALUW funct3 %x\n", funct3);
+						exit(0);
+				};
 
 			//ALUW2
 			case 0b0111011:
+				rs1 = get_part(15, 19, INS);
+				rs2 = get_part(20, 24, INS);
+				rd = get_part(7, 11, INS);
+				funct3 = get_part(12, 14, INS);
+				funct7 = get_part(25, 31, INS);
+				switch(funct3)
+				{
+					//ADDW, SUBW
+					case 0b000:
+						//ADDW
+						if(funct7 == 0b0000000)
+						{	
+							flag = ADDW(rs1, rs2, rd);
+							warning(flag, "ADDW");
+						}
+						//SUBW
+						else if(funct7 == 0b0100000)
+						{
+							flag = SUBW(rs1, rs2, rd);
+							warning(flag, "SUBW");
+						}
+						else
+						{
+							printf("unknown ADDW SUBW funct7 %x\n", funct7);
+							exit(0);
+						}
+						break;
+					//SLLW
+					case 0b001:
+						flag = SLLW(rs1, rs2, rd);
+						warning(flag, "SLLW");
+						break;
+					//SRLW,SRAW
+					case 0b101:
+						//SRLW
+						if(funct7 == 0b0000000)
+						{
+							flag = SRLW(rs1, rs2, rd);
+							warning(flag, "SRLW");
+						}
+						//SRAW
+						else if(funct7 == 0b0100000)
+						{
+							flag = SRAW(rs1, rs2, rd);
+							warning(flag, "SRAW");
+						}
+						else
+						{
+							printf("unknown SRLW SRAW funct7 %x\n", funct7);
+							exit(0);
+						}
+						break;
 
+					default:
+						printf("unknown ALUW2 funct3 %x\n", funct3);
+						exit(0);
+
+				};
 
 
 	
