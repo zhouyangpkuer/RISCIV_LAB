@@ -1,8 +1,147 @@
 #ifndef _EXEC_H
 #define _EXEC_H
 #include "params.h"
+#include <cmath>//here
 // #define DEBUG
 using namespace std;
+
+//here is double floating point function
+
+
+bool FLD(uint rs1, uint imm, uint rd)
+{
+	ulint target_addr = f_reg[rs1].d + (int)imm;
+	double * p = (double *)(vm + target_addr);
+	f_reg[rd].d = (*p);
+	PC += 4;
+	return true;
+
+}
+bool FSD(uint rs1, uint imm, uint rs2)
+{
+	ulint target_addr = f_reg[rs1].d + (int)imm;
+	double *p = (double *)(vm + target_addr);
+	*p = f_reg[rs2].d; 
+	PC += 4;
+	return true;
+}
+bool FMADD_D(uint rs1, uint rs2, uint rs3, uint rd)
+{
+	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d + f_reg[rs3].d;
+	PC += 4;
+	return true;
+}
+bool FMSUB_D(uint rs1, uint rs2, uint rs3, uint rd)
+{
+	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d - f_reg[rs3].d;
+	PC += 4;
+	return true;
+}
+bool FNMSUB_D(uint rs1, uint rs2, uint rs3, uint rd)
+{
+	f_reg[rd].d = -(f_reg[rs1].d * f_reg[rs2].d - f_reg[rs3].d);
+	PC += 4;
+	return true;
+}
+bool FNMADD_D(uint rs1, uint rs2, uint rs3, uint rd)
+{
+	f_reg[rd].d = -(f_reg[rs1].d * f_reg[rs2].d + f_reg[rs3].d);
+	PC += 4;
+	return true;
+}
+bool FADD_D(uint rs1, uint rs2, uint rd)
+{
+	f_reg[rd].d = f_reg[rs1].d + f_reg[rs2].d;
+	PC += 4;
+	return true;
+}
+bool FSUB_D(uint rs1, uint rs2, uint rd)
+{
+	f_reg[rd].d = f_reg[rs1].d - f_reg[rs2].d;
+	PC += 4;
+	return true;
+}
+bool FMUL_D(uint rs1, uint rs2, uint rd)
+{
+	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d;
+	PC += 4;
+	return true;
+}
+bool FDIV_D(uint rs1, uint rs2, uint rd)
+{
+	f_reg[rd].d = f_reg[rs1].d / f_reg[rs2].d;
+	PC += 4;
+	return true;
+}
+bool FSQRT_D(uint rs1, uint rd)
+{
+	f_reg[rd].d = sqrt(f_reg[rs1].d);
+	PC += 4;
+	return true;
+}
+bool FCVT_S_D(uint rs1, uint rd)
+{
+
+	f_reg[rd].f[0] = (float) f_reg[rs1].d;
+	f_reg[rd].f[1] = 0;
+	PC += 4;
+	return true;
+}
+bool FCVT_D_S(uint rs1, uint rd)
+{
+
+	f_reg[rd].d = (double) f_reg[rs1].f[0];
+	PC += 4;
+	return true;
+}
+bool FEQ_D(uint rs1, uint rs2, uint rd)
+{
+	reg[rd] = (fabs(f_reg[rs1].d - f_reg[rs2].d)) < 1e-9? 1 : 0;
+	PC += 4;
+	return true;
+}
+bool FLT_D(uint rs1, uint rs2, uint rd)
+{
+	reg[rd] = f_reg[rs1].d < f_reg[rs2].d? 1 : 0;
+	PC += 4;
+	return true;
+}
+bool FLE_D(uint rs1, uint rs2, uint rd)
+{
+	if(f_reg[rs1].d < f_reg[rs2].d || (fabs(f_reg[rs1].d - f_reg[rs2].d) < 1e-10))
+		reg[rd] = 1;
+	else
+		reg[rd] = 0;
+	PC += 4;
+	return true;
+}
+bool FCVT_W_D(uint rs1, uint rd)
+{
+	reg[rd] = (int) f_reg[rs1].d;
+	PC += 4;
+	return true;
+}
+bool FCVT_WU_D(uint rs1, uint rd)
+{
+	reg[rd] = (uint) f_reg[rs1].d;
+	PC += 4;
+	return true;
+}
+bool FCVT_D_W(uint rs1, uint rd)
+{
+	f_reg[rd].d = (double) f_reg[rs1].d;
+	PC += 4;
+	return true;
+}
+bool FCVT_D_WU(uint rs1, uint rd)
+{
+	f_reg[rd].d = (double) (ulint)f_reg[rs1].d;
+	PC += 4;
+	return true;
+}
+
+
+
 
 void print_type(const char *str)
 {
@@ -736,13 +875,13 @@ bool ECALL()
 	{
 		case 64:
 			// sys_write();
-			printf("sys_write\n");
+			// printf("sys_write\n");
 			break;
 		case 93:
-			printf("Successfully exit!\n");
+			// printf("Successfully exit!\n");
 			exit(0);
 		default:
-			printf("Other sys_call %lld, uncompleted!\n", reg[reg_sys_num]);
+			// printf("Other sys_call %lld, uncompleted!\n", reg[reg_sys_num]);
 			break;
 	};
 	PC += 4;
@@ -754,7 +893,7 @@ bool FLW(uint rs1, uint imm, uint rd)
 {
 	ulint target_addr = reg[rs1] + (int)imm;
 	float *p = (float *)(vm + target_addr);
-	f_reg[rd].f = (float)(*p);
+	f_reg[rd].f[0] = (float)(*p);
 	PC += 4;
 	return true;
 }
@@ -763,37 +902,37 @@ bool FSW(uint rs1, uint rs2, uint imm)
 {
 	ulint target_addr = reg[rs1] + (int)imm;
 	float *p = (float *)(vm + target_addr);
-	*p = f_reg[rs2].f;
+	*p = f_reg[rs2].f[0];
 	PC += 4;
 	return true;
 }
 
 bool FMUL_S(uint rs1, uint rs2, uint rd)
 {
-	float temp = f_reg[rs1].f * f_reg[rs2].f;
-	f_reg[rd].f = temp;
+	float temp = f_reg[rs1].f[0] * f_reg[rs2].f[0];
+	f_reg[rd].f[0] = temp;
 	PC += 4;
 	return true;
 }
 
 bool FDIV_S(uint rs1, uint rs2, uint rd)
 {
-	float temp = f_reg[rs1].f / f_reg[rs2].f;
-	f_reg[rd].f = temp;
+	float temp = f_reg[rs1].f[0] / f_reg[rs2].f[0];
+	f_reg[rd].f[0] = temp;
 	PC += 4;
 	return true;
 }
 
 bool FCVT_S_W(uint rs1, uint rd)
 {
-	f_reg[rd].f = float(reg[rd]&0xffffffff);
+	f_reg[rd].f[0] = float(reg[rd]&0xffffffff);
 	PC += 4;
 	return true;
 }
 
 bool FCVT_S_L(uint rs1, uint rd)
 {
-	f_reg[rd].f = float(reg[rd]);
+	f_reg[rd].f[0] = float(reg[rd]);
 	PC += 4;
 	return true;
 }

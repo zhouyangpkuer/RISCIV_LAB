@@ -16,7 +16,7 @@
 //byte
 #define VM_SIZE 1024 * 1024 * 250
 #define SP_VALUE (VM_SIZE - 1024 * 1024)
-#define FLEN 32
+
 
 #define reg_zero 0
 #define reg_sp 2
@@ -58,7 +58,7 @@ uchar * vm;
 
 lint reg[32];
 // double f_reg[32];
-union fff
+/*union fff
 {
 	uint i;
 	float f;
@@ -66,7 +66,13 @@ union fff
 fff f_fcsr;//status and control register
 //31-8:0  7:5: Rounding Mode 7:NV 3:DZ 2:OF 1:UF 0:NX
 
-ldouble f_regl[32];
+ldouble f_reg[32];
+*/
+union mydouble
+{
+	double d;
+	float f[2];
+} f_reg[32];
 
 
 ulint PC; 
