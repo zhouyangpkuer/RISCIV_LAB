@@ -35,5 +35,17 @@ int main(void)
         vec[i] = i * i % 100007;
     }
     myqsort(vec, 0, vec_len - 1);
-    return 0;
+    
+    int flag = 1;
+    for(int i = 0; i < vec_len - 1; i++)
+    {
+	if(vec[i] > vec[i + 1])
+	{ 
+    	    flag = 0;
+	    break;
+	}
+    }
+    if(flag == 1)
+	return 0;
+    while(1);
 }

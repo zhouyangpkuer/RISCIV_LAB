@@ -29,8 +29,8 @@ bool decode(uchar * p_entry)
 {
 	// char buff[100];
 	// reg[0] = 0;
-	reg[0] = 0;
-	reg[2] = SP;
+	reg[reg_zero] = 0;
+	reg[reg_sp] = SP_VALUE;
 
 	uint INS;
 	uint * p_ins;
@@ -38,15 +38,20 @@ bool decode(uchar * p_entry)
 
 
 	bool EXIT = false;
-	uint rd, rs1, rs2, imm, opcode, funct3, funct7, shamt;
+	uint rd, rs1, rs2, rm, imm, opcode, funct3, funct5, funct7, shamt, fmt;
 	bool flag;
 
+	FILE * file_res = fopen("./PC_res.txt", "w");
+
+	lint cnt = 0;
 	while(!EXIT)
 	{
+		cnt ++;
 		p_ins = (uint *)(vm + PC);
 		INS = *p_ins;
 		
-		// printf("%x ", PC);
+		// if(cnt % 100000 == 0)
+			// fprintf(file_res, "0x%X ", PC);
 		opcode = INS & ((1 << 7) - 1);
 
 		switch(opcode)
@@ -133,7 +138,7 @@ bool decode(uchar * p_entry)
 						break;
 					//theoretically impossible 
 					default:
-						printf("unknown conditional branch funct3 %x\n", funct3);
+						printf("unknown conditional branch funct3 0x%X PC 0x%X\n", funct3, PC);
 						exit(0);
 				};
 				break;
@@ -183,7 +188,7 @@ bool decode(uchar * p_entry)
 
 					//theoretically impossible 
 					default:
-						printf("unknown load funct3 %x\n", funct3);
+						printf("unknown load funct3 0x%X PC 0x%X\n", funct3, PC);
 						exit(0);
 				};
 				break;
@@ -219,7 +224,7 @@ bool decode(uchar * p_entry)
 						break;
 
 					default:
-						printf("unknown store funct3 %x\n", funct3);
+						printf("unknown store funct3 0x%X PC 0x%X\n", funct3, PC);
 						exit(0);
 				};
 				break;
@@ -284,13 +289,13 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown SRXI funct7 %x\n", funct7);
+							printf("unknown SRXI funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);
 						}
 						break;
 
 					default:
-					 	printf("unknown ALU funct3 %x\n", funct3);
+					 	printf("unknown ALU funct3 0x%X PC 0x%X\n", funct3, PC);
 					 	exit(0);
 
 				};
@@ -327,7 +332,7 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown ADD SUB funct7 %x\n", funct7);
+							printf("unknown ADD SUB funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);	
 						}
 						break;
@@ -346,7 +351,7 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown SLL MULH funct7 %x\n", funct7);
+							printf("unknown SLL MULH funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);
 						}
 
@@ -366,7 +371,7 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown SLT MULHSU funct7 %x\n", funct7);
+							printf("unknown SLT MULHSU funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);
 						}
 						break;
@@ -386,7 +391,7 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown SLTU MULHU funct7 %x\n", funct7);
+							printf("unknown SLTU MULHU funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);		
 						}
 						break;
@@ -406,7 +411,7 @@ bool decode(uchar * p_entry)
 						}	
 						else
 						{
-							printf("unknown XOR DIV funct7 %x\n", funct7);
+							printf("unknown XOR DIV funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);		
 						}
 						break;
@@ -433,7 +438,7 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown SRL A funct7 %x\n", funct7);
+							printf("unknown SRL A funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);
 						}
 						break;
@@ -452,7 +457,7 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown OR REM funct7 %x\n", funct7);
+							printf("unknown OR REM funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);	
 						}
 						break;
@@ -472,13 +477,13 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown AND REMU funct7 %x\n", funct7);
+							printf("unknown AND REMU funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);	
 						}
 						break;
 					
 					default:
-						printf("unknown ALU2 funct3 %x\n", funct3);
+						printf("unknown ALU2 funct3 0x%X PC 0x%X\n", funct3, PC);
 						exit(0);
 				};
 				break;
@@ -547,12 +552,12 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown SRLIW SRAIW funct7 %x\n", funct7);
+							printf("unknown SRLIW SRAIW funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);
 						}
 						break;
 					default:
-						printf("unknown ALUW funct3 %x\n", funct3);
+						printf("unknown ALUW funct3 0x%X PC 0x%X\n", funct3, PC);
 						exit(0);
 				};
 				break;
@@ -588,7 +593,7 @@ bool decode(uchar * p_entry)
 						}
 						else
 						{
-							printf("unknown ADDW SUBW funct7 %x\n", funct7);
+							printf("unknown ADDW SUBW funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);
 						}
 						break;
@@ -624,7 +629,7 @@ bool decode(uchar * p_entry)
 						}
 						else 
 						{
-							printf("unknown SRLW SRAW funct7 %x\n", funct7);
+							printf("unknown SRLW SRAW funct7 0x%X PC 0x%X\n", funct7, PC);
 							exit(0);
 						}
 						break;
@@ -639,7 +644,7 @@ bool decode(uchar * p_entry)
 						warning(flag, "REMUW");
 						break;
 					default:
-						printf("unknown ALUW2 funct3 %x\n", funct3);
+						printf("unknown ALUW2 funct3 0x%X PC 0x%X\n", funct3, PC);
 						exit(0);
 
 				};
@@ -651,7 +656,90 @@ bool decode(uchar * p_entry)
 			//64M
 			// case 0b0111011:
 
-			//
+			
+			//F below------------------------------------------------------------------
+			case 0b0000111:
+				//FLW
+				rd = get_part(7,11,INS);
+				rs1 = get_part(15,19,INS);
+				imm = get_part(20,31,INS);
+				flag = FLW(rs1,imm,rd);
+				warning(flag, "FLW");
+				break;
+			case 0b0100111:
+				//FSW
+				rs1 = get_part(15,19,INS);
+				rs2 = get_part(20,24,INS);
+				imm = get_part(7,11,INS)+get_part(25,31,INS)<<5;
+				flag = FSW(rs1,rs2,imm);
+				warning(flag, "FSW");
+				break;
+			case 0b1000011:
+				//
+				rd = get_part(7,11,INS);
+				rm = get_part(12,14,INS);
+				rs1 = get_part(15,19,INS);
+				rs2 = get_part(20,24,INS);
+				fmt = get_part(25,26,INS);
+				funct5 = get_part(27,31,INS);
+				switch(fmt)
+				{
+					case 0b00://S
+						switch(funct5)
+						{
+							case 0b00010://FMUL.S
+								flag = FMUL_S(rs1, rs2, rd);
+								warning(flag, "FMUL_S");
+								break;
+							case 0b00011://FDIV.S
+								flag = FDIV_S(rs1, rs2, rd);
+								warning(flag, "FDIV_S");
+								break;
+							default:break;
+						}
+
+					case 0b01://D
+
+					case 0b10://reserved
+
+					case 0b11://Q
+
+					default:break;
+				}
+				break;
+			case 0b1010011:
+				rd = get_part(7,11,INS);
+				rm = get_part(12,14,INS);
+				rs1 = get_part(15,19,INS);
+				rs2 = get_part(20,24,INS);
+				fmt = get_part(25,26,INS);
+				funct5 = get_part(27,31,INS);
+				switch(fmt)
+				{
+					case 0b00:
+						switch(funct5)
+						{
+							case 0b11010:
+								flag = FCVT_S_W(rs1, rd);
+								warning(flag, "FCVT_S_W");
+								break;
+							case 0b11011:
+								flag = FCVT_S_L(rs1, rd);
+								warning(flag, "FCVT_S_L");
+								break;
+							default:break;
+						}
+					case 0b01:
+					case 0b10:
+					case 0b11:
+					default:break;
+				}
+				break;
+				//F------------------------------------------------------
+	
+	
+	
+	
 
 
 	
@@ -660,7 +748,7 @@ bool decode(uchar * p_entry)
 	
 			//theoretically impossible
 			default:
-				printf("unknown ins opcode %x\n", opcode);
+				printf("unknown ins opcode 0x%X PC 0x%X\n", opcode, PC);
 				exit(0);
 		};
 	}

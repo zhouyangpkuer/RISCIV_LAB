@@ -3,7 +3,7 @@
 #include "exec.h"
 #include "params.h"
 
-const char * filename = "./dhry2.1/dry2";
+const char * filename = "matrix";
 
 using namespace std;
 int main()

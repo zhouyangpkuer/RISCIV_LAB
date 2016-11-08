@@ -10,6 +10,10 @@ int ack(int m,int n)
 int main(void)
 {
 	int m = 3, n = 9;
-	ack(m, n);
-	return 0;
+	int res = ack(m, n);
+	//printf("%d", res);
+	if(res == 4093)
+		return 0;
+	else
+		while(1);
 }

@@ -1,40 +1,116 @@
 #ifndef _EXEC_H
 #define _EXEC_H
 #include "params.h"
+// #define DEBUG
 using namespace std;
+
+void print_type(const char *str)
+{
+	printf("%s:\n", str);
+}
+void print_reg(uint num)
+{
+	printf("REG%u: %lld,", num, reg[num]);
+}
+void print_pc()
+{
+	printf("PC: %llu,", PC);
+}
 
 bool LUI(uint rd, uint imm)
 {
+	#ifdef DEBUG
+	print_type("LUI");
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+
+
 	int temp = imm << 12;
 
 	//signed extended;
 	reg[rd] = (lint)temp;
 	PC += 4;
+
+
+
+	#ifdef DEBUG
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+
 	return true;
 }
 
 bool AUIPC(uint rd, uint imm)
 {
+	#ifdef DEBUG
+	print_type("AUIPC");
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+
+
+
 	int temp = imm << 12;
 	lint temp2 = (lint)temp;
 	// PC += temp2;
 	reg[rd] = (lint)(PC + temp2);
 	PC += 4;
+
+
+
+	#ifdef DEBUG
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+
 	return true;
 }
 
 bool JAL(uint rd, uint imm)
-{
+{	
+	#ifdef DEBUG
+	print_type("JAL");
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+
+
+
 	if(rd != 0)
 	{
 		reg[rd] = (lint)(PC + 4);
 	}
 	//[20,1]
 	PC += ((int)imm << 11) >> 11;
+
+
+
+	#ifdef DEBUG
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+
 	return true;
 }
 bool JALR(uint rd, uint rs1, uint imm)
 {
+	#ifdef DEBUG
+	print_type("JALR");
+	print_reg(rd);
+	print_reg(rs1);
+	print_pc();
+	printf("\n");
+	#endif
+
+
 	ulint temp = PC;
 	//[11,0]
 	PC = ((reg[rs1] + (((int)imm << 20) >> 20)) >> 1) << 1;
@@ -42,6 +118,15 @@ bool JALR(uint rd, uint rs1, uint imm)
 	{
 		reg[rd] = (lint)(temp + 4);
 	}
+
+
+	#ifdef DEBUG
+	print_reg(rd);
+	print_reg(rs1);
+	print_pc();
+	printf("\n");
+	#endif
+
 	return true;
 }
 
@@ -50,50 +135,165 @@ bool JALR(uint rd, uint rs1, uint imm)
 
 bool BEQ(uint rs1, uint rs2, uint imm)
 {
+	#ifdef DEBUG
+	print_type("BEQ");
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+
+
 	if(reg[rs1] == reg[rs2])
 		PC += ((int)imm << 19) >> 19;
 	else
 		PC += 4;
+
+
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
 	return true;
 }
 bool BNE(uint rs1, uint rs2, uint imm)
 {
+	#ifdef DEBUG
+	print_type("BNE");
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+
+
+
 	if(reg[rs1] != reg[rs2])
 		PC += ((int)imm << 19) >> 19;
 	else
 		PC += 4;
+
+
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
 	return true;
 }
 bool BLT(uint rs1, uint rs2, uint imm)
 {
+	#ifdef DEBUG
+	print_type("BLT");
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
+
+
 	if(reg[rs1] < reg[rs2])
 		PC += ((int)imm << 19) >> 19;
 	else
 		PC += 4;
+	
+
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
 	return true;
 }
 bool BGE(uint rs1, uint rs2, uint imm)
 {
+	#ifdef DEBUG
+	print_type("BGE");
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
+
 	if(reg[rs1] >= reg[rs2])
 		PC += ((int)imm << 19) >> 19;
 	else
 		PC += 4;
+	
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
 	return true;
 }
 bool BLTU(uint rs1, uint rs2, uint imm)
 {
+	#ifdef DEBUG
+	print_type("BLTU");
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
+
+	
 	if((ulint)(reg[rs1]) < (ulint)(reg[rs2]))
 		PC += ((int)imm << 19) >> 19;
 	else
 		PC += 4;
+	
+
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
 	return true;
 }
 bool BGEU(uint rs1, uint rs2, uint imm)
 {
+	#ifdef DEBUG
+	print_type("BGEU");
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
+
+
 	if((ulint)(reg[rs1]) >= (ulint)(reg[rs2]))
 		PC += ((int)imm << 19) >> 19;
 	else
 		PC += 4;
+	
+
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rs2);
+	print_pc();
+	printf("\n");
+	#endif
+	
 	return true;
 }
 
@@ -194,15 +394,50 @@ bool SD(uint rs1, uint rs2, uint imm)
 
 bool ADDI(uint rs1, uint rd, uint imm)
 {
+	#ifdef DEBUG
+	print_type("ADDI");
+	print_reg(rs1);
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+	
+
 	reg[rd] = reg[rs1] + (lint)(((int)imm << 20) >> 20);
 	PC += 4;	
+
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
 	return true;
 }
 bool ADDIW(uint rs1, uint rd, uint imm)
 {
-	lint temp = reg[rs1] + (lint)(((int)imm << 20) >> 20);
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	#ifdef DEBUG
+	print_type("ADDIW");
+	print_reg(rs1);
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
+
+
+	int simm = (int)imm;
+	int temp = (int)reg[rs1] + ((simm << 20) >> 20);
+	reg[rd] = (lint)temp;
 	PC += 4;
+	
+
+	#ifdef DEBUG
+	print_reg(rs1);
+	print_reg(rd);
+	print_pc();
+	printf("\n");
+	#endif
 	return true;
 }
 bool SLTI(uint rs1, uint rd, uint imm)
@@ -497,12 +732,71 @@ bool REMUW(uint rs1, uint rs2, uint rd)
 
 bool ECALL()
 {
-
+	switch(reg[reg_sys_num])
+	{
+		case 64:
+			// sys_write();
+			printf("sys_write\n");
+			break;
+		case 93:
+			printf("Successfully exit!\n");
+			exit(0);
+		default:
+			printf("Other sys_call %lld, uncompleted!\n", reg[reg_sys_num]);
+			break;
+	};
 	PC += 4;
 	return true;
 }
 
+//F instruction below
+bool FLW(uint rs1, uint imm, uint rd)
+{
+	ulint target_addr = reg[rs1] + (int)imm;
+	float *p = (float *)(vm + target_addr);
+	f_reg[rd].f = (float)(*p);
+	PC += 4;
+	return true;
+}
 
+bool FSW(uint rs1, uint rs2, uint imm)
+{
+	ulint target_addr = reg[rs1] + (int)imm;
+	float *p = (float *)(vm + target_addr);
+	*p = f_reg[rs2].f;
+	PC += 4;
+	return true;
+}
+
+bool FMUL_S(uint rs1, uint rs2, uint rd)
+{
+	float temp = f_reg[rs1].f * f_reg[rs2].f;
+	f_reg[rd].f = temp;
+	PC += 4;
+	return true;
+}
+
+bool FDIV_S(uint rs1, uint rs2, uint rd)
+{
+	float temp = f_reg[rs1].f / f_reg[rs2].f;
+	f_reg[rd].f = temp;
+	PC += 4;
+	return true;
+}
+
+bool FCVT_S_W(uint rs1, uint rd)
+{
+	f_reg[rd].f = float(reg[rd]&0xffffffff);
+	PC += 4;
+	return true;
+}
+
+bool FCVT_S_L(uint rs1, uint rd)
+{
+	f_reg[rd].f = float(reg[rd]);
+	PC += 4;
+	return true;
+}
 
 
 

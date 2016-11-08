@@ -1,7 +1,13 @@
-#define mat_len 300
+#define mat_len 3
 int A[mat_len][mat_len];
 int B[mat_len][mat_len];
 int C[mat_len][mat_len];
+int D[mat_len][mat_len] = 
+{
+	{0, 0, 0}, 
+	{0, 5, 10}, 
+	{0, 10, 20} 
+};
 void func()
 {
 	for(int i = 0; i < mat_len; i++)
@@ -29,5 +35,16 @@ int main(void)
     	}
     }
     func();
-    return 0;
+    int flag = 1;
+   	for(int i = 0; i < mat_len; i++)
+   	{
+   		for(int j = 0; j < mat_len; j++)
+   		{
+   			if(C[i][j] != D[i][j])
+   				flag = 0;
+   		}
+   	}
+   	if(flag == 1)
+    	return 0;
+    while(1);
 }
