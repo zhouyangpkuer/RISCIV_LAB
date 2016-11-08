@@ -45,7 +45,8 @@ bool decode(uchar * p_entry)
 	{
 		p_ins = (uint *)(vm + PC);
 		INS = *p_ins;
-	
+		
+		// printf("%x ", PC);
 		opcode = INS & ((1 << 7) - 1);
 
 		switch(opcode)
@@ -228,7 +229,7 @@ bool decode(uchar * p_entry)
 				rd = get_part(7, 11, INS);
 				funct3 = get_part(12, 14, INS);
 				imm = get_part(20, 31, INS);
-				shamt = get_part(20, 24, INS);
+				shamt = get_part(20, 25, INS);
 				switch(funct3)
 				{
 					//ADDI
@@ -268,15 +269,15 @@ bool decode(uchar * p_entry)
 						break;
 					//SRLI, SRAI
 					case 0b101:
-						funct7 = get_part(25, 31, INS);
+						funct7 = get_part(26, 31, INS);
 						//SRLI
-						if(funct7 == 0b0000000)
+						if(funct7 == 0b000000)
 						{
 							flag = SRLI(rs1, rd, shamt);
 							warning(flag, "SRLI");
 						}
 						//SRAI
-						else if(funct7 == 0b0100000)
+						else if(funct7 == 0b010000)
 						{
 							flag = SRAI(rs1, rd, shamt);
 							warning(flag, "SRAI");
@@ -514,9 +515,10 @@ bool decode(uchar * p_entry)
 				rs1 = get_part(15, 19, INS);
 				rd = get_part(7, 11, INS);
 				funct3 = get_part(12, 14, INS);
-				funct7 = get_part(25, 31, INS);
+				// funct7 = get_part(25, 31, INS);
+				funct7 = get_part(26, 31, INS);
 				imm = get_part(20, 31, INS);
-				shamt = get_part(20, 24, INS);
+				shamt = get_part(20, 25, INS);
 				switch(funct3)
 				{
 					//ADDIW
@@ -532,13 +534,13 @@ bool decode(uchar * p_entry)
 					//SRLIW,SRAIW
 					case 0b101:
 						//SRLIW
-						if(funct7 == 0b0000000)
+						if(funct7 == 0b000000)
 						{
 							flag = SRLIW(rs1, rd, shamt);
 							warning(flag, "SRLIW");
 						}
 						//SRAIW
-						else if(funct7 == 0b0100000)
+						else if(funct7 == 0b010000)
 						{
 							flag = SRAIW(rs1, rd, shamt);
 							warning(flag, "SRAIW");
