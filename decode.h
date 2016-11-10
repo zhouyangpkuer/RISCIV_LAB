@@ -52,7 +52,7 @@ bool decode(uchar * p_entry)
 		INS = *p_ins;
 		
 		// if(cnt % 1000000 == 0)
-			// fprintf(file_res, "0x%X ", PC);
+			fprintf(file_res, "0x%X ", PC);
 		opcode = INS & ((1 << 7) - 1);
 
 		switch(opcode)
@@ -665,15 +665,22 @@ bool decode(uchar * p_entry)
 				rs1 = get_part(15,19,INS);
 				funct3 = get_part(12, 14, INS);
 				imm = get_part(20,31,INS);
+				//FLD
 				if(funct3 == 0b011)
 				{
 					flag = FLD(rs1, imm, rd);
 					warning(flag, "FLD");
 				}
+				//FLW
 				else
 				{
 					flag = FLW(rs1,imm,rd);
 					warning(flag, "FLW");
+				}
+				else 
+				{
+					printf("unknown FLD FLW funct3 0x%X PC 0x%X\n", funct3, PC);
+					exit(0);
 				}
 				break;
 			case 0b0100111:
@@ -682,15 +689,22 @@ bool decode(uchar * p_entry)
 				rs2 = get_part(20,24,INS);
 				imm = get_part(7,11,INS)+get_part(25,31,INS)<<5;
 				funct3 = get_part(12, 14, INS);
+				//FSD
 				if(funct3 == 0b011)
 				{
 					flag = FSD(rs1, imm, rs2);
 					warning(flag, "FSD");
 				}
+				//FSW
 				else
 				{
 					flag = FSW(rs1,rs2,imm);
 					warning(flag, "FSW");
+				}
+				else 
+				{
+					printf("unknown FSD FSW funct3 0x%X PC 0x%X\n", funct3, PC);
+					exit(0);
 				}
 				break;
 				//FMADD.D
@@ -701,10 +715,16 @@ bool decode(uchar * p_entry)
 				rs3 = get_part(27, 31, INS);
 				rd = get_part(7, 11, INS);
 				uint fmt = get_part(25, 26, INS);
+				//FMADD_D
 				if(fmt == 0b01)
 				{
 					flag = FMADD_D(rs1, rs2, rs3, rd);
 					warning(flag, "FMADD_D");
+				}
+				else 
+				{
+					printf("unknown FMADD_D fmt 0x%X PC 0x%X\n", fmt, PC);
+					exit(0);
 				}
 				break;
 			}
@@ -716,10 +736,16 @@ bool decode(uchar * p_entry)
 				rs3 = get_part(27, 31, INS);
 				rd = get_part(7, 11, INS);
 				uint fmt = get_part(25, 26, INS);
+				//FMSUB_D
 				if(fmt == 0b01)
 				{
 					flag = FMSUB_D(rs1, rs2, rs3, rd);
 					warning(flag, "FMSUB_D");
+				}
+				else 
+				{
+					printf("unknown FMSUB_D fmt 0x%X PC 0x%X\n", fmt, PC);
+					exit(0);
 				}
 				break;
 			}
@@ -736,6 +762,11 @@ bool decode(uchar * p_entry)
 					flag = FNMSUB_D(rs1, rs2, rs3, rd);
 					warning(flag, "FNMSUB_D");
 				}
+				else 
+				{
+					printf("unknown FNMSUB_D fmt 0x%X PC 0x%X\n", fmt, PC);
+					exit(0);
+				}
 				break;
 			}
 			//FNMADD
@@ -750,6 +781,11 @@ bool decode(uchar * p_entry)
 				{
 					flag = FNMADD_D(rs1, rs2, rs3, rd);
 					warning(flag, "FNMADD_D");
+				}
+				else 
+				{
+					printf("unknown FNMADD_D fmt 0x%X PC 0x%X\n", fmt, PC);
+					exit(0);
 				}
 				break;
 			}
@@ -907,8 +943,9 @@ bool decode(uchar * p_entry)
 								warning(flag, "FLE_D");
 								break;
 							}
-							default: ;
-
+							default:
+								printf("unknown Fcmp rm 0x%X PC 0x%X\n", rm, PC);
+								exit(0);
 						}
 						break;
 					}
@@ -933,7 +970,9 @@ bool decode(uchar * p_entry)
 								warning(flag, "FCVT_WU_D");
 								break;
 							}
-							default: ;
+							default:
+								printf("unknown FCVT_W rs2 0x%X PC 0x%X\n", rs2, PC);
+								exit(0);
 						}
 						break;
 					}
@@ -958,7 +997,9 @@ bool decode(uchar * p_entry)
 								warning(flag, "FCVT_D_WU");
 								break;
 							}
-							default: ;
+							default:
+								printf("unknown FCVT_D rs2 0x%X PC 0x%X\n", rs2, PC);
+								exit(0);
 						}
 						break;
 					}
@@ -982,7 +1023,9 @@ bool decode(uchar * p_entry)
 								warning(flag, "FCVT_S_L");
 								break;
 							}
-							default: ;
+							default:
+								printf("unknown FCVT_S rs2 0x%X PC 0x%X\n", rs2, PC);
+								exit(0);
 						}
 						break;
 					}

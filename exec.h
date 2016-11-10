@@ -19,9 +19,26 @@ bool FMV_D_X(uint rs1, uint rd)
 	return true; 
 }
 
+// bool FLD(uint rs1, uint imm, uint rd)
+// {
+// 	ulint target_addr = f_reg[rs1].d + (int)imm;
+// 	double * p = (double *)(vm + target_addr);
+// 	f_reg[rd].d = (*p);
+// 	PC += 4;
+// 	return true;
+
+// }
+// bool FSD(uint rs1, uint imm, uint rs2)
+// {
+// 	ulint target_addr = f_reg[rs1].d + (int)imm;
+// 	double *p = (double *)(vm + target_addr);
+// 	*p = f_reg[rs2].d; 
+// 	PC += 4;
+// 	return true;
+// }
 bool FLD(uint rs1, uint imm, uint rd)
 {
-	ulint target_addr = f_reg[rs1].d + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	double * p = (double *)(vm + target_addr);
 	f_reg[rd].d = (*p);
 	PC += 4;
@@ -30,7 +47,7 @@ bool FLD(uint rs1, uint imm, uint rd)
 }
 bool FSD(uint rs1, uint imm, uint rs2)
 {
-	ulint target_addr = f_reg[rs1].d + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	double *p = (double *)(vm + target_addr);
 	*p = f_reg[rs2].d; 
 	PC += 4;
@@ -918,7 +935,7 @@ bool ECALL(bool &EXIT)
 
 		//SYS_write
 		case 64:
-			// printf("%x\n", PC);
+			printf("****%x****\n", PC);
 
 			ret = syscall(SYS_write, a0, vm + a1, a2, a3, a4, a5);
 			// for(int i = 0; i < a2; i++)
@@ -981,9 +998,26 @@ bool ECALL(bool &EXIT)
 }
 
 //F instruction below
+// bool FLW(uint rs1, uint imm, uint rd)
+// {
+// 	ulint target_addr = reg[rs1] + (int)imm;
+// 	float *p = (float *)(vm + target_addr);
+// 	f_reg[rd].f[0] = (float)(*p);
+// 	PC += 4;
+// 	return true;
+// }
+
+// bool FSW(uint rs1, uint rs2, uint imm)
+// {
+// 	ulint target_addr = reg[rs1] + (int)imm;
+// 	float *p = (float *)(vm + target_addr);
+// 	*p = f_reg[rs2].f[0];
+// 	PC += 4;
+// 	return true;
+// }
 bool FLW(uint rs1, uint imm, uint rd)
 {
-	ulint target_addr = reg[rs1] + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	float *p = (float *)(vm + target_addr);
 	f_reg[rd].f[0] = (float)(*p);
 	PC += 4;
@@ -992,7 +1026,7 @@ bool FLW(uint rs1, uint imm, uint rd)
 
 bool FSW(uint rs1, uint rs2, uint imm)
 {
-	ulint target_addr = reg[rs1] + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	float *p = (float *)(vm + target_addr);
 	*p = f_reg[rs2].f[0];
 	PC += 4;
