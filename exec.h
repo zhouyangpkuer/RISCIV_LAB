@@ -6,6 +6,69 @@
 using namespace std;
 
 //here is double floating point function
+bool FSGNJ_D(uint rs1, uint rs2, uint rd)
+{
+	double temp1 = f_reg[rs1].d;
+	double temp2 = f_reg[rs2].d;
+	if(temp2 < 0)
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = temp1;
+		else
+			f_reg[rd].d = -temp1;
+	}
+	else
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = -temp1;
+		else
+			f_reg[rd].d = temp1;
+	}
+	PC += 4;
+	return true;
+}
+bool FSGNJN_D(uint rs1, uint rs2, uint rd)
+{
+	double temp1 = f_reg[rs1].d;
+	double temp2 = f_reg[rs2].d;
+	if(temp2 < 0)
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = -temp1;
+		else
+			f_reg[rd].d = temp1;
+	}
+	else
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = temp1;
+		else
+			f_reg[rd].d = -temp1;
+	}
+	PC += 4;
+	return true;
+}
+bool FSGNJX_D(uint rs1, uint rs2, uint rd)
+{
+	double temp1 = f_reg[rs1].d;
+	double temp2 = f_reg[rs2].d;
+	if(temp2 < 0)
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = -temp1;
+		else
+			f_reg[rd].d = -temp1;
+	}
+	else
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = temp1;
+		else
+			f_reg[rd].d = temp1;
+	}
+	PC += 4;
+	return true;
+}
 bool FMV_X_D(uint rs1, uint rd)
 {
 	reg[rd] = (lint)f_reg[rs1].d;
@@ -810,10 +873,21 @@ bool AND(uint rs1, uint rs2, uint rd)
 }
 
 
+// bool MUL(uint rs1, uint rs2, uint rd)
+// {
+// 	lint temp = reg[rs1] * reg[rs2];
+// 	reg[rd] = temp & (((ulint)1 << 32) - 1);
+// 	PC += 4;
+// 	return true;
+// }
 bool MUL(uint rs1, uint rs2, uint rd)
 {
-	lint temp = reg[rs1] * reg[rs2];
-	reg[rd] = temp & (((ulint)1 << 32) - 1);
+	//Here I replace your code, because mul just place the lower 64bit to the rd register 
+
+	//lint temp = reg[rs1] * reg[rs2];
+	//reg[rd] = temp & (((ulint)1 << 32) - 1);
+	reg[rd] = reg[rs1] * reg[rs2];
+
 	PC += 4;
 	return true;
 }
@@ -924,7 +998,12 @@ bool ECALL(bool &EXIT)
 			reg[reg_a0] = (lint)ret;
 			// printf("SYS_close ret: %d\n", ret);
 			break;
-
+		//SYS_lseek
+		case 62:
+			ret = syscall(SYS_lseek, a0, a1, a2, a3, a4, a5);
+			reg[reg_a0] = (lint)ret;
+			// printf("SYS_lseek ret: %d\n", ret);
+			break;
 		//SYS_read
 		case 63:
 			ret = syscall(SYS_read, a0, vm + a1, a2, a3, a4, a5);
@@ -935,7 +1014,7 @@ bool ECALL(bool &EXIT)
 
 		//SYS_write
 		case 64:
-			printf("****%x****\n", PC);
+			// printf("****%x****\n", PC);
 
 			ret = syscall(SYS_write, a0, vm + a1, a2, a3, a4, a5);
 			// for(int i = 0; i < a2; i++)
@@ -975,8 +1054,12 @@ bool ECALL(bool &EXIT)
 
 		//SYS_gettimeofday
 		case 169:
-			//ret = syscall(SYS_gettimeofday, a0, a1, a2, a3, a4, a5);
-			reg[reg_a0] = clock();
+			ret = syscall(SYS_gettimeofday, a0, a1, a2, a3, a4, a5);
+			
+			reg[reg_a0] = 0;
+
+			// reg[reg_a0] = (lint)ret;
+			
 			// printf("SYS_gettimeofday ret: %d\n", ret);
 			break;
 

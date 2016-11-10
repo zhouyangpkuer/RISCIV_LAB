@@ -52,7 +52,7 @@ bool decode(uchar * p_entry)
 		INS = *p_ins;
 		
 		// if(cnt % 1000000 == 0)
-			fprintf(file_res, "0x%X ", PC);
+			// fprintf(file_res, "0x%X ", PC);
 		opcode = INS & ((1 << 7) - 1);
 
 		switch(opcode)
@@ -672,7 +672,7 @@ bool decode(uchar * p_entry)
 					warning(flag, "FLD");
 				}
 				//FLW
-				else
+				else if(funct3 == 0b010)
 				{
 					flag = FLW(rs1,imm,rd);
 					warning(flag, "FLW");
@@ -696,7 +696,7 @@ bool decode(uchar * p_entry)
 					warning(flag, "FSD");
 				}
 				//FSW
-				else
+				else if(funct3 == 0b010)
 				{
 					flag = FSW(rs1,rs2,imm);
 					warning(flag, "FSW");
@@ -893,6 +893,42 @@ bool decode(uchar * p_entry)
 						warning(flag, "FSQRT_D");
 						break;
 					}
+					//FSGNJ_D
+					case 0b0010001:
+					{
+						rs1 = get_part(15, 19, INS);
+						rs2 = get_part(20, 24, INS);
+						rd = get_part(7, 11, INS);
+						funct3 = get_part(12, 14, INS);
+
+						switch (funct3)
+						{
+							case 0b000:
+							{
+								flag = FSGNJ_D(rs1, rs2, rd);
+								warning(flag, "FSGNJ_D");
+								break;
+							}
+							case 0b001:
+							{
+								flag = FSGNJN_D(rs1, rs2, rd);
+								warning(flag, "FSGNJN_D");
+								break;
+							}
+							case 0b010:
+							{
+								flag = FSGNJX_D(rs1, rs2, rd);
+								warning(flag, "FSGNJX_D");
+								break;
+							}
+							default:
+							{
+								printf("unknown FSGNJ_D funct3 0x%X PC 0x%X\n", funct3, PC);
+								exit(0);
+							}
+						}
+						break;
+					}
 					//FCVT_S_D
 					case 0b0100000:
 					{
@@ -1030,7 +1066,9 @@ bool decode(uchar * p_entry)
 						break;
 					}
 
-					default: ;
+					default:
+						printf("unknown floating point operations funct5 0x%X PC 0x%X\n", funct5, PC);
+						exit(0);
 				}
 				break;
 			}
