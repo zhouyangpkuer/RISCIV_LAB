@@ -13,8 +13,12 @@
 #include <cstring>
 #include <string>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/syscall.h>
+#include <errno.h>
+// #include <sys/export.h>
 //byte
-#define VM_SIZE 1024 * 1024 * 250
+#define VM_SIZE 1024 * 1024 * 1000
 #define SP_VALUE (VM_SIZE - 1024 * 1024)
 
 
@@ -27,7 +31,8 @@
 #define reg_a4 14
 #define reg_a5 15
 #define reg_sys_num 17
-
+#define brk_addr (VM_SIZE - 1024 * 1024 * 10)
+#define brk_lim 1024 * 1024
 
 
 typedef unsigned char uchar;

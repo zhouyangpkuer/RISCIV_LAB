@@ -153,7 +153,7 @@ void print_reg(uint num)
 }
 void print_pc()
 {
-	printf("PC: %llu,", PC);
+	printf("PC: %X,", PC);
 }
 
 bool LUI(uint rd, uint imm)
@@ -541,8 +541,8 @@ bool ADDI(uint rs1, uint rd, uint imm)
 	printf("\n");
 	#endif
 	
-
-	reg[rd] = reg[rs1] + (lint)(((int)imm << 20) >> 20);
+	int simm = (int)imm;
+	reg[rd] = reg[rs1] + (lint)((simm << 20) >> 20);
 	PC += 4;	
 
 
@@ -631,8 +631,8 @@ bool SLLI(uint rs1, uint rd, uint shamt)
 }
 bool SLLIW(uint rs1, uint rd, uint shamt)
 {
-	lint temp = (ulint)reg[rs1] << shamt;
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	int temp = (int)reg[rs1] << shamt;
+	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;
 }
@@ -644,8 +644,8 @@ bool SRLI(uint rs1, uint rd, uint shamt)
 }
 bool SRLIW(uint rs1, uint rd, uint shamt)
 {
-	lint temp = (ulint)reg[rs1] >> shamt;
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	uint temp = (uint)reg[rs1] >> shamt;
+	reg[rd] = (lint)(int)temp;
 	PC += 4;
 	return true;
 }
@@ -657,8 +657,8 @@ bool SRAI(uint rs1, uint rd, uint shamt)
 }
 bool SRAIW(uint rs1, uint rd, uint shamt)
 {
-	lint temp = reg[rs1] >> shamt;
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	int temp = (int)reg[rs1] >> shamt;
+	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;
 }
@@ -676,8 +676,8 @@ bool ADD(uint rs1, uint rs2, uint rd)
 
 bool ADDW(uint rs1, uint rs2, uint rd)
 {
-	lint temp = reg[rs1] + reg[rs2];
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	int temp = (int)reg[rs1] + (int)reg[rs2];
+	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;	
 }
@@ -690,22 +690,24 @@ bool SUB(uint rs1, uint rs2, uint rd)
 }
 bool SUBW(uint rs1, uint rs2, uint rd)
 {
-	lint temp = reg[rs1] - reg[rs2];
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	int temp = (int)reg[rs1] - (int)reg[rs2];
+	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;	
 }
 
 bool SLL(uint rs1, uint rs2, uint rd)
 {
-	reg[rd] = (ulint)reg[rs1] << (reg[rs2] & ((1 << 5) - 1));
+	uint shamt = (uint)reg[rs2] & ((1 << 6) - 1);
+	reg[rd] = (ulint)reg[rs1] << shamt;
 	PC += 4;
 	return true;
 }
 bool SLLW(uint rs1, uint rs2, uint rd)
 {
-	lint temp = (ulint)reg[rs1] << (reg[rs2] & ((1 << 5) - 1));
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	uint shamt = (uint)reg[rs2] & ((1 << 5) - 1);
+	uint temp = (uint)reg[rs1] << shamt;
+	reg[rd] = (lint)(int)temp;
 	PC += 4;
 	return true;
 }
@@ -736,28 +738,32 @@ bool XOR(uint rs1, uint rs2, uint rd)
 }
 bool SRL(uint rs1, uint rs2, uint rd)
 {
-	reg[rd] = (ulint)reg[rs1] >> (reg[rs2] & ((1 << 5) - 1));
+	uint shamt = (uint)reg[rs2] & ((1 << 6) - 1);
+	reg[rd] = (ulint)reg[rs1] >> shamt;
 	PC += 4;
 	return true;
 }
 bool SRLW(uint rs1, uint rs2, uint rd)
 {
-	lint temp = (ulint)reg[rs1] >> (reg[rs2] & ((1 << 5) - 1));
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	uint shamt = (uint)reg[rs2] & ((1 << 5) - 1);
+	uint temp = (uint)reg[rs1] >> shamt;
+	reg[rd] = (lint)(int)temp;
 	PC += 4;
 	return true;	
 }
 
 bool SRA(uint rs1, uint rs2, uint rd)
 {
-	reg[rd] = reg[rs1] >> (reg[rs2] & ((1 << 5) - 1));
+	uint shamt = (uint)reg[rs2] & ((1 << 6) - 1);
+	reg[rd] = reg[rs1] >> shamt;
 	PC += 4;
 	return true;
 }
 bool SRAW(uint rs1, uint rs2, uint rd)
 {
-	lint temp = reg[rs1] >> (reg[rs2] & ((1 << 5) - 1));
-	reg[rd] = ((temp & (((ulint)1 << 32) - 1)) << 32) >> 32;
+	uint shamt = (uint)reg[rs2] & ((1 << 5) - 1);
+	int temp = (int)reg[rs1] >> shamt;
+	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;	
 }
@@ -835,53 +841,126 @@ bool REMU(uint rs1, uint rs2, uint rd)
 
 bool MULW(uint rs1, uint rs2, uint rd)
 {
-	int temp = ((int)(reg[rs1] & (((ulint)1 << 32) - 1))) * ((int)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	int temp = (int)reg[rs1] * (int)reg[rs2];
 	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;
 }
 bool DIVW(uint rs1, uint rs2, uint rd)
 {
-	int temp = ((int)(reg[rs1] & (((ulint)1 << 32) - 1))) / ((int)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	int temp = (int)reg[rs1] / (int)reg[rs2];
 	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;
 }
 bool DIVUW(uint rs1, uint rs2, uint rd)
 {
-	uint temp = ((uint)(reg[rs1] & (((ulint)1 << 32) - 1))) / ((uint)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	uint temp = (uint)reg[rs1] / (uint)reg[rs2];
 	reg[rd] = (lint)(int)temp;
 	PC += 4;
 	return true;
 }
 bool REMW(uint rs1, uint rs2, uint rd)
 {
-	int temp = ((int)(reg[rs1] & (((ulint)1 << 32) - 1))) % ((int)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	int temp = (int)reg[rs1] % (int)reg[rs2];
 	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;
 }
 bool REMUW(uint rs1, uint rs2, uint rd)
 {
-	uint temp = ((uint)(reg[rs1] & (((ulint)1 << 32) - 1))) % ((uint)(reg[rs2] & (((ulint)1 << 32) - 1)));
+	uint temp = (uint)reg[rs1] % (uint)reg[rs2];
 	reg[rd] = (lint)(int)temp;
 	PC += 4;
 	return true;
 }
 
-bool ECALL()
+bool ECALL(bool &EXIT)
 {
+
+	lint a0 = reg[reg_a0];
+	lint a1 = reg[reg_a1];
+	lint a2 = reg[reg_a2];
+	lint a3 = reg[reg_a3];
+	lint a4 = reg[reg_a4];
+	lint a5 = reg[reg_a5];
+	int ret;
+	int cnt_brk = 0;
 	switch(reg[reg_sys_num])
 	{
-		case 64:
-			// sys_write();
-			// printf("sys_write\n");
+		//SYS_close
+		case 57:
+			// int ret = syscall(SYS_close, (int)a0);
+			ret = syscall(SYS_close, a0, a1, a2, a3, a4, a5);
+			reg[reg_a0] = (lint)ret;
+			// printf("SYS_close ret: %d\n", ret);
 			break;
+
+		//SYS_read
+		case 63:
+			ret = syscall(SYS_read, a0, vm + a1, a2, a3, a4, a5);
+			// int ret = syscall(SYS_read, (int)a0, (void *)a1, (size_t)a2);
+			reg[reg_a0] = (lint)ret;
+			// printf("SYS_read ret: %d\n", ret);
+			break;
+
+		//SYS_write
+		case 64:
+			// printf("%x\n", PC);
+
+			ret = syscall(SYS_write, a0, vm + a1, a2, a3, a4, a5);
+			// for(int i = 0; i < a2; i++)
+			// {
+				// printf("%c", vm[a1 + i]);
+			// printf("%d\n", a2);
+			// int ret = syscall(SYS_write, (int)a0, (const void *)a1, (size_t)a2);
+			reg[reg_a0] = (lint)ret;
+			// printf("SYS_write ret: %d\n", ret);
+			break;
+
+
+
+
+		//SYS_fstat
+		case 80:
+			ret = syscall(SYS_fstat, a0, a1, a2, a3, a4, a5);
+			// int ret = syscall(SYS_fstat, (int)a0, (void *)a1, (size_t)a2);
+			reg[reg_a0] = (lint)ret;
+			// reg[reg_a0] = 1;
+			// printf("SYS_fstat ret: %d\n", ret);
+			break;
+
+
+
+
+
+		//SYS_exit
 		case 93:
+			// EXIT = true;
 			// printf("Successfully exit!\n");
-			exit(0);
+			ret = syscall(SYS_exit, a0, a1, a2, a3, a4, a5);
+			reg[reg_a0] = (lint)ret;
+			// printf("SYS_exit ret: %d\n", ret);
+			break;
+
+		//SYS_gettimeofday
+		case 169:
+			// ret = syscall(SYS_gettimeofday, a0, a1, a2, a3, a4, a5);
+			reg[reg_a0] = clock();
+			// printf("SYS_gettimeofday ret: %d\n", ret);
+			break;
+
+		//SYS_brk
+		case 214:
+			// ret = syscall(SYS_brk, a0, a1, a2, a3, a4, a5);
+			// reg[reg_a0] = (lint)ret;
+			reg[reg_a0] = brk_addr - cnt_brk * brk_lim;
+			cnt_brk ++; 
+			// printf("SYS_brk ret: %d\n", reg[reg_a0]);
+			break;
+
 		default:
-			// printf("Other sys_call %lld, uncompleted!\n", reg[reg_sys_num]);
+			printf("Other sys_call %lld, uncompleted!\n", reg[reg_sys_num]);
 			break;
 	};
 	PC += 4;

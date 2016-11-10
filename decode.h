@@ -51,7 +51,7 @@ bool decode(uchar * p_entry)
 		p_ins = (uint *)(vm + PC);
 		INS = *p_ins;
 		
-		// if(cnt % 100000 == 0)
+		// if(cnt % 1000000 == 0)
 			// fprintf(file_res, "0x%X ", PC);
 		opcode = INS & ((1 << 7) - 1);
 
@@ -407,7 +407,7 @@ bool decode(uchar * p_entry)
 						//DIV
 						else if(funct7 == 0b0000001)
 						{
-							flag = XOR(rs1, rs2, rd);
+							flag = DIV(rs1, rs2, rd);
 							warning(flag, "DIV");
 						}	
 						else
@@ -497,7 +497,7 @@ bool decode(uchar * p_entry)
 			case 0b1110011:
 				if(INS == 0b1110011)
 				{
-					bool flag = ECALL();
+					bool flag = ECALL(EXIT);
 					warning(flag, "ECALL");
 				}
 				else
