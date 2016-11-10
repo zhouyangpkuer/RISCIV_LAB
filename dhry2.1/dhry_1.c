@@ -150,13 +150,7 @@ main ()
 
   for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
   {
-    printf ("  Enum_Comp:         %d\n", Ptr_Glob->variant.var_1.Enum_Comp);
-    printf ("        should be:   %d\n", 2);
-    printf ("  Int_Comp:          %d\n", Ptr_Glob->variant.var_1.Int_Comp);
-    printf ("        should be:   %d\n", 17);
-    printf ("  Enum_Comp:         %d\n", Next_Ptr_Glob->variant.var_1.Enum_Comp);
-    printf ("        should be:   %d\n", 1);
-  
+    
     Proc_5();
     Proc_4();
       /* Ch_1_Glob == 'A', Ch_2_Glob == 'B', Bool_Glob == true */
@@ -197,7 +191,7 @@ main ()
       /* Int_1_Loc == 1, Int_2_Loc == 13, Int_3_Loc == 7 */
     Proc_2 (&Int_1_Loc);
       /* Int_1_Loc == 5 */
-
+  
   } /* loop "for Run_Index" */
 
   /**************/

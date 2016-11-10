@@ -6,6 +6,69 @@
 using namespace std;
 
 //here is double floating point function
+bool FSGNJ_D(uint rs1, uint rs2, uint rd)
+{
+	double temp1 = f_reg[rs1].d;
+	double temp2 = f_reg[rs2].d;
+	if(temp2 < 0)
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = temp1;
+		else
+			f_reg[rd].d = -temp1;
+	}
+	else
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = -temp1;
+		else
+			f_reg[rd].d = temp1;
+	}
+	PC += 4;
+	return true;
+}
+bool FSGNJN_D(uint rs1, uint rs2, uint rd)
+{
+	double temp1 = f_reg[rs1].d;
+	double temp2 = f_reg[rs2].d;
+	if(temp2 < 0)
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = -temp1;
+		else
+			f_reg[rd].d = temp1;
+	}
+	else
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = temp1;
+		else
+			f_reg[rd].d = -temp1;
+	}
+	PC += 4;
+	return true;
+}
+bool FSGNJX_D(uint rs1, uint rs2, uint rd)
+{
+	double temp1 = f_reg[rs1].d;
+	double temp2 = f_reg[rs2].d;
+	if(temp2 < 0)
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = -temp1;
+		else
+			f_reg[rd].d = -temp1;
+	}
+	else
+	{
+		if(temp1 < 0)
+			f_reg[rd].d = temp1;
+		else
+			f_reg[rd].d = temp1;
+	}
+	PC += 4;
+	return true;
+}
 bool FMV_X_D(uint rs1, uint rd)
 {
 	reg[rd] = (lint)f_reg[rs1].d;
@@ -19,9 +82,26 @@ bool FMV_D_X(uint rs1, uint rd)
 	return true; 
 }
 
+// bool FLD(uint rs1, uint imm, uint rd)
+// {
+// 	ulint target_addr = f_reg[rs1].d + (int)imm;
+// 	double * p = (double *)(vm + target_addr);
+// 	f_reg[rd].d = (*p);
+// 	PC += 4;
+// 	return true;
+
+// }
+// bool FSD(uint rs1, uint imm, uint rs2)
+// {
+// 	ulint target_addr = f_reg[rs1].d + (int)imm;
+// 	double *p = (double *)(vm + target_addr);
+// 	*p = f_reg[rs2].d; 
+// 	PC += 4;
+// 	return true;
+// }
 bool FLD(uint rs1, uint imm, uint rd)
 {
-	ulint target_addr = f_reg[rs1].d + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	double * p = (double *)(vm + target_addr);
 	f_reg[rd].d = (*p);
 	PC += 4;
@@ -30,7 +110,7 @@ bool FLD(uint rs1, uint imm, uint rd)
 }
 bool FSD(uint rs1, uint imm, uint rs2)
 {
-	ulint target_addr = f_reg[rs1].d + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	double *p = (double *)(vm + target_addr);
 	*p = f_reg[rs2].d; 
 	PC += 4;
@@ -601,7 +681,7 @@ bool SLTI(uint rs1, uint rd, uint imm)
 }
 bool SLTIU(uint rs1, uint rd, uint imm)
 {
-	if((ulint)reg[rs1] < (ulint)(((int)imm << 20) >> 20))
+	if((ulint)reg[rs1] < (ulint)(lint)(((int)imm << 20) >> 20))
 		reg[rd] = 1;
 	else
 		reg[rd] = 0;
@@ -793,10 +873,21 @@ bool AND(uint rs1, uint rs2, uint rd)
 }
 
 
+// bool MUL(uint rs1, uint rs2, uint rd)
+// {
+// 	lint temp = reg[rs1] * reg[rs2];
+// 	reg[rd] = temp & (((ulint)1 << 32) - 1);
+// 	PC += 4;
+// 	return true;
+// }
 bool MUL(uint rs1, uint rs2, uint rd)
 {
-	lint temp = reg[rs1] * reg[rs2];
-	reg[rd] = temp & (((ulint)1 << 32) - 1);
+	//Here I replace your code, because mul just place the lower 64bit to the rd register 
+
+	//lint temp = reg[rs1] * reg[rs2];
+	//reg[rd] = temp & (((ulint)1 << 32) - 1);
+	reg[rd] = reg[rs1] * reg[rs2];
+
 	PC += 4;
 	return true;
 }
@@ -907,7 +998,12 @@ bool ECALL(bool &EXIT)
 			reg[reg_a0] = (lint)ret;
 			// printf("SYS_close ret: %d\n", ret);
 			break;
-
+		//SYS_lseek
+		case 62:
+			ret = syscall(SYS_lseek, a0, a1, a2, a3, a4, a5);
+			reg[reg_a0] = (lint)ret;
+			// printf("SYS_lseek ret: %d\n", ret);
+			break;
 		//SYS_read
 		case 63:
 			ret = syscall(SYS_read, a0, vm + a1, a2, a3, a4, a5);
@@ -918,7 +1014,7 @@ bool ECALL(bool &EXIT)
 
 		//SYS_write
 		case 64:
-			// printf("%x\n", PC);
+			// printf("****%x****\n", PC);
 
 			ret = syscall(SYS_write, a0, vm + a1, a2, a3, a4, a5);
 			// for(int i = 0; i < a2; i++)
@@ -958,8 +1054,12 @@ bool ECALL(bool &EXIT)
 
 		//SYS_gettimeofday
 		case 169:
-			//ret = syscall(SYS_gettimeofday, a0, a1, a2, a3, a4, a5);
-			reg[reg_a0] = clock();
+			ret = syscall(SYS_gettimeofday, a0, a1, a2, a3, a4, a5);
+			
+			reg[reg_a0] = 0;
+
+			// reg[reg_a0] = (lint)ret;
+			
 			// printf("SYS_gettimeofday ret: %d\n", ret);
 			break;
 
@@ -981,9 +1081,26 @@ bool ECALL(bool &EXIT)
 }
 
 //F instruction below
+// bool FLW(uint rs1, uint imm, uint rd)
+// {
+// 	ulint target_addr = reg[rs1] + (int)imm;
+// 	float *p = (float *)(vm + target_addr);
+// 	f_reg[rd].f[0] = (float)(*p);
+// 	PC += 4;
+// 	return true;
+// }
+
+// bool FSW(uint rs1, uint rs2, uint imm)
+// {
+// 	ulint target_addr = reg[rs1] + (int)imm;
+// 	float *p = (float *)(vm + target_addr);
+// 	*p = f_reg[rs2].f[0];
+// 	PC += 4;
+// 	return true;
+// }
 bool FLW(uint rs1, uint imm, uint rd)
 {
-	ulint target_addr = reg[rs1] + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	float *p = (float *)(vm + target_addr);
 	f_reg[rd].f[0] = (float)(*p);
 	PC += 4;
@@ -992,7 +1109,7 @@ bool FLW(uint rs1, uint imm, uint rd)
 
 bool FSW(uint rs1, uint rs2, uint imm)
 {
-	ulint target_addr = reg[rs1] + (int)imm;
+	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
 	float *p = (float *)(vm + target_addr);
 	*p = f_reg[rs2].f[0];
 	PC += 4;
