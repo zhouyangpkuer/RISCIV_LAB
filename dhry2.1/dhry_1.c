@@ -95,6 +95,11 @@ main ()
   Ptr_Glob->Discr                       = Ident_1;
   Ptr_Glob->variant.var_1.Enum_Comp     = Ident_3;
   Ptr_Glob->variant.var_1.Int_Comp      = 40;
+
+
+
+  printf("%lf\n", 0.988777);
+  
   strcpy (Ptr_Glob->variant.var_1.Str_Comp, 
           "DHRYSTONE PROGRAM, SOME STRING");
   strcpy (Str_1_Loc, "DHRYSTONE PROGRAM, 1'ST STRING");
