@@ -16,7 +16,7 @@ bool FMV_D_X(uint rs1, uint rd)
 {
 	f_reg[rd].d = (double)reg[rs1];
 	PC += 4;
-	return true;
+	return true; 
 }
 
 bool FLD(uint rs1, uint imm, uint rd)
