@@ -726,7 +726,7 @@ bool decode(uchar * p_entry)
 			//FNMSUB.D
 			case 0b1001011:
 			{
-				rs1 = get_part(15, 19, INS);
+				rs1 = get_part(15, 19, INS); 
 				rs2 = get_part(20, 24, INS);
 				rs3 = get_part(27, 31, INS);
 				rd = get_part(7, 11, INS);
