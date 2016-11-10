@@ -16,9 +16,11 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/times.h>
 // #include <sys/export.h>
 //byte
-#define VM_SIZE 1024 * 1024 * 1000
+#define VM_SIZE 1024 * 1024 * 500
 #define SP_VALUE (VM_SIZE - 1024 * 1024)
 
 

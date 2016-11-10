@@ -1,0 +1,11 @@
+prefix=/home/zhouyang/Desktop/lab2/ThisIsNotYourFinding/riscv
+exec_prefix=/home/zhouyang/Desktop/lab2/ThisIsNotYourFinding/riscv
+libdir=${prefix}/${exec_prefix}/lib
+includedir=${prefix}/${prefix}/include
+
+Name: riscv-riscv
+Description: RISC-V 
+Version: git
+Libs: -Wl,-rpath,${libdir} -L${libdir} -lriscv
+Cflags: -I${includedir}
+URL: http://riscv.org/download.html#tab_spike

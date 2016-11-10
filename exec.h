@@ -810,6 +810,7 @@ bool MULHU(uint rs1, uint rs2, uint rd)
 	PC += 4;
 	return true;
 }
+
 bool DIV(uint rs1, uint rs2, uint rd)
 {
 	lint temp = reg[rs1] / reg[rs2];
@@ -927,7 +928,7 @@ bool ECALL(bool &EXIT)
 			// int ret = syscall(SYS_fstat, (int)a0, (void *)a1, (size_t)a2);
 			reg[reg_a0] = (lint)ret;
 			// reg[reg_a0] = 1;
-			// printf("SYS_fstat ret: %d\n", ret);
+			printf("SYS_fstat ret: %d\n", ret);
 			break;
 
 
@@ -938,14 +939,15 @@ bool ECALL(bool &EXIT)
 		case 93:
 			// EXIT = true;
 			// printf("Successfully exit!\n");
-			ret = syscall(SYS_exit, a0, a1, a2, a3, a4, a5);
-			reg[reg_a0] = (lint)ret;
+			//ret = syscall(SYS_exit, a0, a1, a2, a3, a4, a5);
+			reg[reg_a0] = 1;
+			EXIT = true;
 			// printf("SYS_exit ret: %d\n", ret);
 			break;
 
 		//SYS_gettimeofday
 		case 169:
-			// ret = syscall(SYS_gettimeofday, a0, a1, a2, a3, a4, a5);
+			//ret = syscall(SYS_gettimeofday, a0, a1, a2, a3, a4, a5);
 			reg[reg_a0] = clock();
 			// printf("SYS_gettimeofday ret: %d\n", ret);
 			break;
