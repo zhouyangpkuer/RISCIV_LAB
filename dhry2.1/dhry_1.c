@@ -98,7 +98,7 @@ main ()
 
 
 
-  printf("%lf\n", 0.988777);
+  //printf("%lf\n", 0.988777);
   
   strcpy (Ptr_Glob->variant.var_1.Str_Comp, 
           "DHRYSTONE PROGRAM, SOME STRING");
@@ -150,7 +150,13 @@ main ()
 
   for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
   {
-
+    printf ("  Enum_Comp:         %d\n", Ptr_Glob->variant.var_1.Enum_Comp);
+    printf ("        should be:   %d\n", 2);
+    printf ("  Int_Comp:          %d\n", Ptr_Glob->variant.var_1.Int_Comp);
+    printf ("        should be:   %d\n", 17);
+    printf ("  Enum_Comp:         %d\n", Next_Ptr_Glob->variant.var_1.Enum_Comp);
+    printf ("        should be:   %d\n", 1);
+  
     Proc_5();
     Proc_4();
       /* Ch_1_Glob == 'A', Ch_2_Glob == 'B', Bool_Glob == true */
