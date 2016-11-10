@@ -6,7 +6,18 @@
 using namespace std;
 
 //here is double floating point function
-
+bool FMV_X_D(uint rs1, uint rd)
+{
+	reg[rd] = (lint)f_reg[rs1].d;
+	PC += 4;
+	return true;
+}
+bool FMV_D_X(uint rs1, uint rd)
+{
+	f_reg[rd].d = (double)reg[rs1];
+	PC += 4;
+	return true;
+}
 
 bool FLD(uint rs1, uint imm, uint rd)
 {

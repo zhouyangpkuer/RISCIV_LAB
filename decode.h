@@ -760,6 +760,26 @@ bool decode(uchar * p_entry)
 				funct5 = get_part(25, 31, INS);
 				switch (funct5)
 				{
+					//FMV_X_D
+					case 0b1110001:
+					{
+						rs1 = get_part(15, 19, INS);
+						rd = get_part(7, 11, INS);
+
+						flag = FMV_X_D(rs1, rd);
+						warning(flag, "FMV_X_D");
+						break;
+					}
+					//FMV_D_X
+					case 0b1111001:
+					{
+						rs1 = get_part(15, 19, INS);
+						rd = get_part(7, 11, INS);
+
+						flag = FMV_D_X(rs1, rd);
+						warning(flag, "FMV_D_X");
+						break;
+					}
 					//FADD_D
 					case 0b0000001:
 					{
