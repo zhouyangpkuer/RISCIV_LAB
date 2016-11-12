@@ -98,7 +98,7 @@ main ()
 
 
 
-  printf("%lf\n", 0.988777);
+  //printf("%lf\n", 0.988777);
   
   strcpy (Ptr_Glob->variant.var_1.Str_Comp, 
           "DHRYSTONE PROGRAM, SOME STRING");
@@ -150,7 +150,7 @@ main ()
 
   for (Run_Index = 1; Run_Index <= Number_Of_Runs; ++Run_Index)
   {
-
+    
     Proc_5();
     Proc_4();
       /* Ch_1_Glob == 'A', Ch_2_Glob == 'B', Bool_Glob == true */
@@ -191,7 +191,7 @@ main ()
       /* Int_1_Loc == 1, Int_2_Loc == 13, Int_3_Loc == 7 */
     Proc_2 (&Int_1_Loc);
       /* Int_1_Loc == 5 */
-
+  
   } /* loop "for Run_Index" */
 
   /**************/

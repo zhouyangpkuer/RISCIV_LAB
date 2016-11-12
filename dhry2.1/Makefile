@@ -16,6 +16,7 @@
 #
 CC=		cl			# C compiler name goes here (MSC)
 CC=		../riscv/bin/riscv64-unknown-elf-gcc			# C compiler name goes here (UNIX)
+#CC = gcc
 
 PROGS=		msc			# Programs to build (MSC)
 PROGS=		unix			# Programs to build (UNIX)

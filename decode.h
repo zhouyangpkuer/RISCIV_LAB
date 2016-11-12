@@ -2,33 +2,19 @@
 #define _DECODE_H
 #include "params.h"
 #include "exec.h"
+
 using namespace std;
 
 //include the end bit
 //[start, end]
-uint get_part(int start, int end, uint INS)
-{
-	INS >>= start;
-	INS &= ((1 << (end - start + 1)) - 1);
-	return INS;
-}
 
-void warning(bool flag, const char * type)
-{
-	if(!flag)
-	{
-		string str = "error in ";
-		str.append(type);
-		char buff[200];
-		strcpy(buff, str.c_str());
-		printf("%s\n", buff);
-		exit(0);
-	}
-}
 bool decode(uchar * p_entry)
 {
 	// char buff[100];
 	// reg[0] = 0;
+	for(int i = 0; i < 32; i++)
+		reg[i] = 0;
+
 	reg[reg_zero] = 0;
 	reg[reg_sp] = SP_VALUE;
 
@@ -48,11 +34,12 @@ bool decode(uchar * p_entry)
 	while(!EXIT)
 	{
 		cnt ++;
-		p_ins = (uint *)(vm + PC);
-		INS = *p_ins;
-		
+		// p_ins = (uint *)(vm + PC);
+		// INS = *p_ins;
+		INS = readMem(PC, 4);
+
 		// if(cnt % 1000000 == 0)
-			// fprintf(file_res, "0x%X ", PC);
+			fprintf(file_res, "0x%X ", PC);
 		opcode = INS & ((1 << 7) - 1);
 
 		switch(opcode)
@@ -488,32 +475,6 @@ bool decode(uchar * p_entry)
 						exit(0);
 				};
 				break;
-			//FENCE, FENCE.I
-			case 0b0001111:
-				printf("FENCE and FENCE.I, uncompleted!\n");
-				exit(0);
-
-			//ECALL, EBREAK, CSR
-			case 0b1110011:
-				if(INS == 0b1110011)
-				{
-					bool flag = ECALL(EXIT);
-					warning(flag, "ECALL");
-				}
-				else
-				{	
-					printf("EBREAK and CSR, uncompleted!\n");
-					exit(0);
-				}
-				break;
-
-			//LWU, LD contained before;
-		
-			
-			//SD contained before;
-
-
-			//SLLI, SRLI, SRAI contained before;
 
 
 			//ALUW
@@ -650,6 +611,34 @@ bool decode(uchar * p_entry)
 
 				};
 				break;
+				
+			//FENCE, FENCE.I
+			case 0b0001111:
+				printf("FENCE and FENCE.I, uncompleted!\n");
+				exit(0);
+
+			//ECALL, EBREAK, CSR
+			case 0b1110011:
+				if(INS == 0b1110011)
+				{
+					bool flag = ECALL(EXIT);
+					warning(flag, "ECALL");
+				}
+				else
+				{	
+					printf("EBREAK and CSR, uncompleted!\n");
+					exit(0);
+				}
+				break;
+
+			//LWU, LD contained before;
+		
+			
+			//SD contained before;
+
+
+			//SLLI, SRLI, SRAI contained before;
+
 
 			//32M contained before
 			// case 0b0110011:
@@ -658,420 +647,440 @@ bool decode(uchar * p_entry)
 			// case 0b0111011:
 
 			
-			//F below------------------------------------------------------------------
 			case 0b0000111:
-				//FLW
-				rd = get_part(7,11,INS);
-				rs1 = get_part(15,19,INS);
-				funct3 = get_part(12, 14, INS);
-				imm = get_part(20,31,INS);
-				//FLD
-				if(funct3 == 0b011)
-				{
-					flag = FLD(rs1, imm, rd);
-					warning(flag, "FLD");
-				}
-				//FLW
-				else if(funct3 == 0b010)
-				{
-					flag = FLW(rs1,imm,rd);
-					warning(flag, "FLW");
-				}
-				else 
-				{
-					printf("unknown FLD FLW funct3 0x%X PC 0x%X\n", funct3, PC);
-					exit(0);
-				}
+				FLX(INS);
 				break;
+
 			case 0b0100111:
-				//FSW
-				rs1 = get_part(15,19,INS);
-				rs2 = get_part(20,24,INS);
-				imm = get_part(7,11,INS)+get_part(25,31,INS)<<5;
-				funct3 = get_part(12, 14, INS);
-				//FSD
-				if(funct3 == 0b011)
-				{
-					flag = FSD(rs1, imm, rs2);
-					warning(flag, "FSD");
-				}
-				//FSW
-				else if(funct3 == 0b010)
-				{
-					flag = FSW(rs1,rs2,imm);
-					warning(flag, "FSW");
-				}
-				else 
-				{
-					printf("unknown FSD FSW funct3 0x%X PC 0x%X\n", funct3, PC);
-					exit(0);
-				}
+				FSX(INS);
 				break;
-				//FMADD.D
-			case 0b1000011:
-			{
-				rs1 = get_part(15, 19, INS);
-				rs2 = get_part(20, 24, INS);
-				rs3 = get_part(27, 31, INS);
-				rd = get_part(7, 11, INS);
-				uint fmt = get_part(25, 26, INS);
-				//FMADD_D
-				if(fmt == 0b01)
-				{
-					flag = FMADD_D(rs1, rs2, rs3, rd);
-					warning(flag, "FMADD_D");
-				}
-				else 
-				{
-					printf("unknown FMADD_D fmt 0x%X PC 0x%X\n", fmt, PC);
-					exit(0);
-				}
-				break;
-			}
-			//FMSUB.D
-			case 0b1000111:
-			{
-				rs1 = get_part(15, 19, INS);
-				rs2 = get_part(20, 24, INS);
-				rs3 = get_part(27, 31, INS);
-				rd = get_part(7, 11, INS);
-				uint fmt = get_part(25, 26, INS);
-				//FMSUB_D
-				if(fmt == 0b01)
-				{
-					flag = FMSUB_D(rs1, rs2, rs3, rd);
-					warning(flag, "FMSUB_D");
-				}
-				else 
-				{
-					printf("unknown FMSUB_D fmt 0x%X PC 0x%X\n", fmt, PC);
-					exit(0);
-				}
-				break;
-			}
-			//FNMSUB.D
-			case 0b1001011:
-			{
-				rs1 = get_part(15, 19, INS); 
-				rs2 = get_part(20, 24, INS);
-				rs3 = get_part(27, 31, INS);
-				rd = get_part(7, 11, INS);
-				uint fmt = get_part(25, 26, INS);
-				if(fmt == 0b01)
-				{
-					flag = FNMSUB_D(rs1, rs2, rs3, rd);
-					warning(flag, "FNMSUB_D");
-				}
-				else 
-				{
-					printf("unknown FNMSUB_D fmt 0x%X PC 0x%X\n", fmt, PC);
-					exit(0);
-				}
-				break;
-			}
-			//FNMADD
-			case 0b1001111:
-			{
-				rs1 = get_part(15, 19, INS);
-				rs2 = get_part(20, 24, INS);
-				rs3 = get_part(27, 31, INS);
-				rd = get_part(7, 11, INS);
-				uint fmt = get_part(25, 26, INS);
-				if(fmt == 0b01)
-				{
-					flag = FNMADD_D(rs1, rs2, rs3, rd);
-					warning(flag, "FNMADD_D");
-				}
-				else 
-				{
-					printf("unknown FNMADD_D fmt 0x%X PC 0x%X\n", fmt, PC);
-					exit(0);
-				}
-				break;
-			}
 
-			//floating point operations
 			case 0b1010011:
-			{
-				funct5 = get_part(25, 31, INS);
-				switch (funct5)
-				{
-					//FMV_X_D
-					case 0b1110001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FMV_X_D(rs1, rd);
-						warning(flag, "FMV_X_D");
-						break;
-					}
-					//FMV_D_X
-					case 0b1111001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FMV_D_X(rs1, rd);
-						warning(flag, "FMV_D_X");
-						break;
-					}
-					//FADD_D
-					case 0b0000001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FADD_D(rs1, rs2, rd);
-						warning(flag, "FADD_D");
-						break;
-					}
-					//FSUB_D
-					case 0b0000101:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-						
-						flag = FSUB_D(rs1, rs2, rd);
-						warning(flag, "FSUB_D");
-						break;
-					}
-					//FMUL_D
-					case 0b0001001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FMUL_D(rs1, rs2, rd);
-						warning(flag, "FMUL_D");
-						break;
-					}
-					//FUL_S
-					case 0b0001000:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FMUL_S(rs1, rs2, rd);
-						warning(flag, "FMUL_S");
-						break;
-					}
-					//FDIV_D
-					case 0b0001101:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FDIV_D(rs1, rs2, rd);
-						warning(flag, "FDIV_D");
-						break;
-					}
-					//FDIV_S
-					case 0b0001100:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FDIV_S(rs1, rs2, rd);
-						warning(flag, "FDIV_S");
-						break;
-					}
-					//FSQRT_D
-					case 0b0101101:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FSQRT_D(rs1, rd);
-						warning(flag, "FSQRT_D");
-						break;
-					}
-					//FSGNJ_D
-					case 0b0010001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-						funct3 = get_part(12, 14, INS);
-
-						switch (funct3)
-						{
-							case 0b000:
-							{
-								flag = FSGNJ_D(rs1, rs2, rd);
-								warning(flag, "FSGNJ_D");
-								break;
-							}
-							case 0b001:
-							{
-								flag = FSGNJN_D(rs1, rs2, rd);
-								warning(flag, "FSGNJN_D");
-								break;
-							}
-							case 0b010:
-							{
-								flag = FSGNJX_D(rs1, rs2, rd);
-								warning(flag, "FSGNJX_D");
-								break;
-							}
-							default:
-							{
-								printf("unknown FSGNJ_D funct3 0x%X PC 0x%X\n", funct3, PC);
-								exit(0);
-							}
-						}
-						break;
-					}
-					//FCVT_S_D
-					case 0b0100000:
-					{
-						rs1 = get_part(15, 19, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FCVT_S_D(rs1, rd);
-						warning(flag, "FCVT_S_D");
-						break;
-					}
-					//FCVT_D_S
-					case 0b0100001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rd = get_part(7, 11, INS);
-
-						flag = FCVT_D_S(rs1, rd);
-						warning(flag, "FCVT_D_S");
-						break;
-					}
-					//Fcmp
-					case 0b1010001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-						uint rm = get_part(12, 14, INS);
-						switch (rm)
-						{
-							//FEQ_D
-							case 0b010:
-							{
-								flag = FEQ_D(rs1, rs2, rd);
-								warning(flag, "FEQ_D");
-								break;
-							}
-							//FLT_D
-							case 0b001:
-							{
-								flag = FLT_D(rs1, rs2, rd);
-								warning(flag, "FLT_D");
-								break;
-							}
-							//FLE_D
-							case 0b000:
-							{
-								flag = FLE_D(rs1, rs2, rd);
-								warning(flag, "FLE_D");
-								break;
-							}
-							default:
-								printf("unknown Fcmp rm 0x%X PC 0x%X\n", rm, PC);
-								exit(0);
-						}
-						break;
-					}
-					case 0b1100001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-						switch (rs2)
-						{
-							//FCVT_W_D
-							case 0b00000:
-							{
-								flag = FCVT_W_D(rs1, rd);
-								warning(flag, "FCVT_W_D");
-								break;
-							}
-							//FCVT_WU_D
-							case 0b00001:
-							{
-								flag = FCVT_WU_D(rs1, rd);
-								warning(flag, "FCVT_WU_D");
-								break;
-							}
-							default:
-								printf("unknown FCVT_W rs2 0x%X PC 0x%X\n", rs2, PC);
-								exit(0);
-						}
-						break;
-					}
-					case 0b1101001:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-						switch (rs2)
-						{
-							//FCVT_D_W
-							case 0b00000:
-							{
-								flag = FCVT_D_W(rs1, rd);
-								warning(flag, "FCVT_D_W");
-								break;
-							}
-							//FCVT_D_WU
-							case 0b00001:
-							{
-								flag = FCVT_D_WU(rs1, rd);
-								warning(flag, "FCVT_D_WU");
-								break;
-							}
-							default:
-								printf("unknown FCVT_D rs2 0x%X PC 0x%X\n", rs2, PC);
-								exit(0);
-						}
-						break;
-					}
-					case 0b1101000:
-					{
-						rs1 = get_part(15, 19, INS);
-						rs2 = get_part(20, 24, INS);
-						rd = get_part(7, 11, INS);
-						switch (rs2)
-						{
-							//FCVT_S_W
-							case 0b00000:
-							{
-								flag = FCVT_S_W(rs1, rd);
-								warning(flag, "FCVT_S_W");
-								break;
-							}
-							case 0b00010:
-							{
-								flag = FCVT_S_L(rs1, rd);
-								warning(flag, "FCVT_S_L");
-								break;
-							}
-							default:
-								printf("unknown FCVT_S rs2 0x%X PC 0x%X\n", rs2, PC);
-								exit(0);
-						}
-						break;
-					}
-
-					default:
-						printf("unknown floating point operations funct5 0x%X PC 0x%X\n", funct5, PC);
-						exit(0);
-				}
+				FOP(INS);
 				break;
-			}
+
+			case 0b1000011:
+				FMADDX(INS);
+				break;
+
+			//F below------------------------------------------------------------------
+			// case 0b0000111:
+			// 	//FLW
+			// 	rd = get_part(7,11,INS);
+			// 	rs1 = get_part(15,19,INS);
+			// 	funct3 = get_part(12, 14, INS);
+			// 	imm = get_part(20,31,INS);
+			// 	//FLD
+			// 	if(funct3 == 0b011)
+			// 	{
+			// 		flag = FLD(rs1, imm, rd);
+			// 		warning(flag, "FLD");
+			// 	}
+			// 	//FLW
+			// 	else if(funct3 == 0b010)
+			// 	{
+			// 		flag = FLW(rs1,imm,rd);
+			// 		warning(flag, "FLW");
+			// 	}
+			// 	else 
+			// 	{
+			// 		printf("unknown FLD FLW funct3 0x%X PC 0x%X\n", funct3, PC);
+			// 		exit(0);
+			// 	}
+			// 	break;
+			// case 0b0100111:
+			// 	//FSW
+			// 	rs1 = get_part(15,19,INS);
+			// 	rs2 = get_part(20,24,INS);
+			// 	imm = 0;
+			// 	imm += get_part(7, 11, INS);
+			// 	imm += get_part(25, 31, INS) << 5;
+			// 	// imm += get_part(7, 11, INS) + get_part(25, 31, INS) << 5;
+
+			// 	funct3 = get_part(12, 14, INS);
+			// 	//FSD
+			// 	if(funct3 == 0b011)
+			// 	{
+			// 		flag = FSD(rs1, imm, rs2);
+			// 		warning(flag, "FSD");
+			// 	}
+			// 	//FSW
+			// 	else if(funct3 == 0b010)
+			// 	{
+			// 		flag = FSW(rs1,rs2,imm);
+			// 		warning(flag, "FSW");
+			// 	}
+			// 	else 
+			// 	{
+			// 		printf("unknown FSD FSW funct3 0x%X PC 0x%X\n", funct3, PC);
+			// 		exit(0);
+			// 	}
+			// 	break;
+			// 	//FMADD.D
+			// case 0b1000011:
+			// {
+			// 	rs1 = get_part(15, 19, INS);
+			// 	rs2 = get_part(20, 24, INS);
+			// 	rs3 = get_part(27, 31, INS);
+			// 	rd = get_part(7, 11, INS);
+			// 	uint fmt = get_part(25, 26, INS);
+			// 	//FMADD_D
+			// 	if(fmt == 0b01)
+			// 	{
+			// 		flag = FMADD_D(rs1, rs2, rs3, rd);
+			// 		warning(flag, "FMADD_D");
+			// 	}
+			// 	else 
+			// 	{
+			// 		printf("unknown FMADD_D fmt 0x%X PC 0x%X\n", fmt, PC);
+			// 		exit(0);
+			// 	}
+			// 	break;
+			// }
+			// //FMSUB.D
+			// case 0b1000111:
+			// {
+			// 	rs1 = get_part(15, 19, INS);
+			// 	rs2 = get_part(20, 24, INS);
+			// 	rs3 = get_part(27, 31, INS);
+			// 	rd = get_part(7, 11, INS);
+			// 	uint fmt = get_part(25, 26, INS);
+			// 	//FMSUB_D
+			// 	if(fmt == 0b01)
+			// 	{
+			// 		flag = FMSUB_D(rs1, rs2, rs3, rd);
+			// 		warning(flag, "FMSUB_D");
+			// 	}
+			// 	else 
+			// 	{
+			// 		printf("unknown FMSUB_D fmt 0x%X PC 0x%X\n", fmt, PC);
+			// 		exit(0);
+			// 	}
+			// 	break;
+			// }
+			// //FNMSUB.D
+			// case 0b1001011:
+			// {
+			// 	rs1 = get_part(15, 19, INS); 
+			// 	rs2 = get_part(20, 24, INS);
+			// 	rs3 = get_part(27, 31, INS);
+			// 	rd = get_part(7, 11, INS);
+			// 	uint fmt = get_part(25, 26, INS);
+			// 	if(fmt == 0b01)
+			// 	{
+			// 		flag = FNMSUB_D(rs1, rs2, rs3, rd);
+			// 		warning(flag, "FNMSUB_D");
+			// 	}
+			// 	else 
+			// 	{
+			// 		printf("unknown FNMSUB_D fmt 0x%X PC 0x%X\n", fmt, PC);
+			// 		exit(0);
+			// 	}
+			// 	break;
+			// }
+			// //FNMADD
+			// case 0b1001111:
+			// {
+			// 	rs1 = get_part(15, 19, INS);
+			// 	rs2 = get_part(20, 24, INS);
+			// 	rs3 = get_part(27, 31, INS);
+			// 	rd = get_part(7, 11, INS);
+			// 	uint fmt = get_part(25, 26, INS);
+			// 	if(fmt == 0b01)
+			// 	{
+			// 		flag = FNMADD_D(rs1, rs2, rs3, rd);
+			// 		warning(flag, "FNMADD_D");
+			// 	}
+			// 	else 
+			// 	{
+			// 		printf("unknown FNMADD_D fmt 0x%X PC 0x%X\n", fmt, PC);
+			// 		exit(0);
+			// 	}
+			// 	break;
+			// }
+
+			// //floating point operations
+			// case 0b1010011:
+			// {
+			// 	funct5 = get_part(25, 31, INS);
+			// 	switch (funct5)
+			// 	{
+			// 		//FMV_X_D
+			// 		case 0b1110001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FMV_X_D(rs1, rd);
+			// 			warning(flag, "FMV_X_D");
+			// 			break;
+			// 		}
+			// 		//FMV_D_X
+			// 		case 0b1111001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FMV_D_X(rs1, rd);
+			// 			warning(flag, "FMV_D_X");
+			// 			break;
+			// 		}
+			// 		//FADD_D
+			// 		case 0b0000001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FADD_D(rs1, rs2, rd);
+			// 			warning(flag, "FADD_D");
+			// 			break;
+			// 		}
+			// 		//FSUB_D
+			// 		case 0b0000101:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+						
+			// 			flag = FSUB_D(rs1, rs2, rd);
+			// 			warning(flag, "FSUB_D");
+			// 			break;
+			// 		}
+			// 		//FMUL_D
+			// 		case 0b0001001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FMUL_D(rs1, rs2, rd);
+			// 			warning(flag, "FMUL_D");
+			// 			break;
+			// 		}
+			// 		//FUL_S
+			// 		case 0b0001000:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FMUL_S(rs1, rs2, rd);
+			// 			warning(flag, "FMUL_S");
+			// 			break;
+			// 		}
+			// 		//FDIV_D
+			// 		case 0b0001101:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FDIV_D(rs1, rs2, rd);
+			// 			warning(flag, "FDIV_D");
+			// 			break;
+			// 		}
+			// 		//FDIV_S
+			// 		case 0b0001100:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FDIV_S(rs1, rs2, rd);
+			// 			warning(flag, "FDIV_S");
+			// 			break;
+			// 		}
+			// 		//FSQRT_D
+			// 		case 0b0101101:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FSQRT_D(rs1, rd);
+			// 			warning(flag, "FSQRT_D");
+			// 			break;
+			// 		}
+			// 		//FSGNJ_D
+			// 		case 0b0010001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+			// 			funct3 = get_part(12, 14, INS);
+
+			// 			switch (funct3)
+			// 			{
+			// 				case 0b000:
+			// 				{
+			// 					flag = FSGNJ_D(rs1, rs2, rd);
+			// 					warning(flag, "FSGNJ_D");
+			// 					break;
+			// 				}
+			// 				case 0b001:
+			// 				{
+			// 					flag = FSGNJN_D(rs1, rs2, rd);
+			// 					warning(flag, "FSGNJN_D");
+			// 					break;
+			// 				}
+			// 				case 0b010:
+			// 				{
+			// 					flag = FSGNJX_D(rs1, rs2, rd);
+			// 					warning(flag, "FSGNJX_D");
+			// 					break;
+			// 				}
+			// 				default:
+			// 				{
+			// 					printf("unknown FSGNJ_D funct3 0x%X PC 0x%X\n", funct3, PC);
+			// 					exit(0);
+			// 				}
+			// 			}
+			// 			break;
+			// 		}
+			// 		//FCVT_S_D
+			// 		case 0b0100000:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FCVT_S_D(rs1, rd);
+			// 			warning(flag, "FCVT_S_D");
+			// 			break;
+			// 		}
+			// 		//FCVT_D_S
+			// 		case 0b0100001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rd = get_part(7, 11, INS);
+
+			// 			flag = FCVT_D_S(rs1, rd);
+			// 			warning(flag, "FCVT_D_S");
+			// 			break;
+			// 		}
+			// 		//Fcmp
+			// 		case 0b1010001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+			// 			uint rm = get_part(12, 14, INS);
+			// 			switch (rm)
+			// 			{
+			// 				//FEQ_D
+			// 				case 0b010:
+			// 				{
+			// 					flag = FEQ_D(rs1, rs2, rd);
+			// 					warning(flag, "FEQ_D");
+			// 					break;
+			// 				}
+			// 				//FLT_D
+			// 				case 0b001:
+			// 				{
+			// 					flag = FLT_D(rs1, rs2, rd);
+			// 					warning(flag, "FLT_D");
+			// 					break;
+			// 				}
+			// 				//FLE_D
+			// 				case 0b000:
+			// 				{
+			// 					flag = FLE_D(rs1, rs2, rd);
+			// 					warning(flag, "FLE_D");
+			// 					break;
+			// 				}
+			// 				default:
+			// 					printf("unknown Fcmp rm 0x%X PC 0x%X\n", rm, PC);
+			// 					exit(0);
+			// 			}
+			// 			break;
+			// 		}
+			// 		case 0b1100001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+			// 			switch (rs2)
+			// 			{
+			// 				//FCVT_W_D
+			// 				case 0b00000:
+			// 				{
+			// 					flag = FCVT_W_D(rs1, rd);
+			// 					warning(flag, "FCVT_W_D");
+			// 					break;
+			// 				}
+			// 				//FCVT_WU_D
+			// 				case 0b00001:
+			// 				{
+			// 					flag = FCVT_WU_D(rs1, rd);
+			// 					warning(flag, "FCVT_WU_D");
+			// 					break;
+			// 				}
+			// 				default:
+			// 					printf("unknown FCVT_W rs2 0x%X PC 0x%X\n", rs2, PC);
+			// 					exit(0);
+			// 			}
+			// 			break;
+			// 		}
+			// 		case 0b1101001:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+			// 			switch (rs2)
+			// 			{
+			// 				//FCVT_D_W
+			// 				case 0b00000:
+			// 				{
+			// 					flag = FCVT_D_W(rs1, rd);
+			// 					warning(flag, "FCVT_D_W");
+			// 					break;
+			// 				}
+			// 				//FCVT_D_WU
+			// 				case 0b00001:
+			// 				{
+			// 					flag = FCVT_D_WU(rs1, rd);
+			// 					warning(flag, "FCVT_D_WU");
+			// 					break;
+			// 				}
+			// 				default:
+			// 					printf("unknown FCVT_D rs2 0x%X PC 0x%X\n", rs2, PC);
+			// 					exit(0);
+			// 			}
+			// 			break;
+			// 		}
+			// 		case 0b1101000:
+			// 		{
+			// 			rs1 = get_part(15, 19, INS);
+			// 			rs2 = get_part(20, 24, INS);
+			// 			rd = get_part(7, 11, INS);
+			// 			switch (rs2)
+			// 			{
+			// 				//FCVT_S_W
+			// 				case 0b00000:
+			// 				{
+			// 					flag = FCVT_S_W(rs1, rd);
+			// 					warning(flag, "FCVT_S_W");
+			// 					break;
+			// 				}
+			// 				case 0b00010:
+			// 				{
+			// 					flag = FCVT_S_L(rs1, rd);
+			// 					warning(flag, "FCVT_S_L");
+			// 					break;
+			// 				}
+			// 				default:
+			// 					printf("unknown FCVT_S rs2 0x%X PC 0x%X\n", rs2, PC);
+			// 					exit(0);
+			// 			}
+			// 			break;
+			// 		}
+
+			// 		default:
+			// 			printf("unknown floating point operations funct5 0x%X PC 0x%X\n", funct5, PC);
+			// 			exit(0);
+			// 	}
+			// 	break;
+			// }
 				//F------------------------------------------------------
 	
 	

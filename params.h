@@ -18,9 +18,17 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/times.h>
+#include <math.h>
+#include <cmath>
+
+using namespace std;
+
 // #include <sys/export.h>
 //byte
 #define VM_SIZE 1024 * 1024 * 500
+
+// #define VM_SIZE 959525169 + 1
+
 #define SP_VALUE (VM_SIZE - 1024 * 1024)
 
 
@@ -42,6 +50,11 @@ typedef unsigned long long int ulint;
 typedef unsigned int uint;
 typedef long long int lint;
 typedef long double ldouble;
+typedef unsigned short int ushort;
+
+// typedef unsigned int uint32_t;
+// typedef unsigned long long int uint64_t;
+
 
 
 // ulint b;
@@ -63,7 +76,9 @@ typedef long double ldouble;
 
 uchar * vm;
 
-lint reg[32];
+ulint reg[32];
+ulint freg[32];
+
 // double f_reg[32];
 /*union fff
 {
@@ -75,13 +90,122 @@ fff f_fcsr;//status and control register
 
 ldouble f_reg[32];
 */
-union mydouble
-{
-	double d;
-	float f[2];
-} f_reg[32];
-
+// union mydouble
+// {
+// 	double d;
+// 	float f[2];
+// } f_reg[32];
 
 ulint PC; 
+uint get_part(int start, int end, uint INS)
+{
+	INS >>= start;
+	INS &= ((1 << (end - start + 1)) - 1);
+	return INS;
+}
+
+void warning(bool flag, const char * type)
+{
+	printf("%s\n", type);
+	if(!flag)
+	{
+		string str = "error in ";
+		str.append(type);
+		char buff[200];
+		strcpy(buff, str.c_str());
+		printf("%s\n", buff);
+		exit(0);
+	}
+}
+
+ulint RD(uint INS)
+{
+	return get_part(7, 11, INS);
+}
+
+ulint RS1(uint INS)
+{
+	return get_part(15, 19, INS);
+}
+
+ulint RS2(uint INS)
+{
+	return get_part(20, 24, INS);
+}
+
+ulint FUNCT3(uint INS)
+{
+	return get_part(12, 14, INS);
+}
+
+lint signExtend(uint imm, uint shamt)
+{
+	return (lint)(((int)imm << (32 - shamt)) >> (32 - shamt));
+}
+lint signExtend64(ulint imm, uint shamt)
+{
+	return (lint)(((lint)imm << (64 - shamt)) >> (64 - shamt));
+}
+ulint readMem(ulint addr, uint n)
+{
+	// printf("%lld\n", addr);
+	if(addr >= VM_SIZE)
+	{
+		printf("error in memory\n");
+		exit(0);
+	}
+	ulint target_addr = addr;
+	if(n == 1)
+	{
+		uchar * p = (uchar *)(vm + addr);
+		return (*p);
+	}
+	if(n == 2)
+	{
+		ushort * p = (ushort *)(vm + addr);
+		return (*p);
+	}
+	if(n == 4)
+	{
+		uint * p = (uint *)(vm + addr);
+		return (*p);
+	}
+	if(n == 8)
+	{
+		ulint * p = (ulint *)(vm + addr);
+		return (*p);
+	}
+}
+void writeMem(ulint addr, ulint value, uint n)
+{
+	// printf("%lld\n", addr);
+	if(addr >= VM_SIZE)
+	{
+		printf("error in memory\n");
+		exit(0);
+	}
+	
+	ulint target_addr = addr;
+	if(n == 1)
+	{
+		uchar * p = (uchar *)(vm + addr);
+		(*p) = value;
+	}
+	if(n == 2)
+	{
+		ushort * p = (ushort *)(vm + addr);
+		(*p) = value;
+	}
+	if(n == 4)
+	{
+		uint * p = (uint *)(vm + addr);
+		(*p) = value;
+	}
+	if(n == 8)
+	{
+		ulint * p = (ulint *)(vm + addr);
+		(*p) = value;
+	}
+}
 
 #endif //_PARAMS_H

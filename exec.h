@@ -2,237 +2,10 @@
 #define _EXEC_H
 #include "params.h"
 #include <cmath>//here
+#include "float.h"
+
 // #define DEBUG
 using namespace std;
-
-//here is double floating point function
-bool FSGNJ_D(uint rs1, uint rs2, uint rd)
-{
-	double temp1 = f_reg[rs1].d;
-	double temp2 = f_reg[rs2].d;
-	if(temp2 < 0)
-	{
-		if(temp1 < 0)
-			f_reg[rd].d = temp1;
-		else
-			f_reg[rd].d = -temp1;
-	}
-	else
-	{
-		if(temp1 < 0)
-			f_reg[rd].d = -temp1;
-		else
-			f_reg[rd].d = temp1;
-	}
-	PC += 4;
-	return true;
-}
-bool FSGNJN_D(uint rs1, uint rs2, uint rd)
-{
-	double temp1 = f_reg[rs1].d;
-	double temp2 = f_reg[rs2].d;
-	if(temp2 < 0)
-	{
-		if(temp1 < 0)
-			f_reg[rd].d = -temp1;
-		else
-			f_reg[rd].d = temp1;
-	}
-	else
-	{
-		if(temp1 < 0)
-			f_reg[rd].d = temp1;
-		else
-			f_reg[rd].d = -temp1;
-	}
-	PC += 4;
-	return true;
-}
-bool FSGNJX_D(uint rs1, uint rs2, uint rd)
-{
-	double temp1 = f_reg[rs1].d;
-	double temp2 = f_reg[rs2].d;
-	if(temp2 < 0)
-	{
-		if(temp1 < 0)
-			f_reg[rd].d = -temp1;
-		else
-			f_reg[rd].d = -temp1;
-	}
-	else
-	{
-		if(temp1 < 0)
-			f_reg[rd].d = temp1;
-		else
-			f_reg[rd].d = temp1;
-	}
-	PC += 4;
-	return true;
-}
-bool FMV_X_D(uint rs1, uint rd)
-{
-	reg[rd] = (lint)f_reg[rs1].d;
-	PC += 4;
-	return true;
-}
-bool FMV_D_X(uint rs1, uint rd)
-{
-	f_reg[rd].d = (double)reg[rs1];
-	PC += 4;
-	return true; 
-}
-
-// bool FLD(uint rs1, uint imm, uint rd)
-// {
-// 	ulint target_addr = f_reg[rs1].d + (int)imm;
-// 	double * p = (double *)(vm + target_addr);
-// 	f_reg[rd].d = (*p);
-// 	PC += 4;
-// 	return true;
-
-// }
-// bool FSD(uint rs1, uint imm, uint rs2)
-// {
-// 	ulint target_addr = f_reg[rs1].d + (int)imm;
-// 	double *p = (double *)(vm + target_addr);
-// 	*p = f_reg[rs2].d; 
-// 	PC += 4;
-// 	return true;
-// }
-bool FLD(uint rs1, uint imm, uint rd)
-{
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	double * p = (double *)(vm + target_addr);
-	f_reg[rd].d = (*p);
-	PC += 4;
-	return true;
-
-}
-bool FSD(uint rs1, uint imm, uint rs2)
-{
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	double *p = (double *)(vm + target_addr);
-	*p = f_reg[rs2].d; 
-	PC += 4;
-	return true;
-}
-bool FMADD_D(uint rs1, uint rs2, uint rs3, uint rd)
-{
-	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d + f_reg[rs3].d;
-	PC += 4;
-	return true;
-}
-bool FMSUB_D(uint rs1, uint rs2, uint rs3, uint rd)
-{
-	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d - f_reg[rs3].d;
-	PC += 4;
-	return true;
-}
-bool FNMSUB_D(uint rs1, uint rs2, uint rs3, uint rd)
-{
-	f_reg[rd].d = -(f_reg[rs1].d * f_reg[rs2].d - f_reg[rs3].d);
-	PC += 4;
-	return true;
-}
-bool FNMADD_D(uint rs1, uint rs2, uint rs3, uint rd)
-{
-	f_reg[rd].d = -(f_reg[rs1].d * f_reg[rs2].d + f_reg[rs3].d);
-	PC += 4;
-	return true;
-}
-bool FADD_D(uint rs1, uint rs2, uint rd)
-{
-	f_reg[rd].d = f_reg[rs1].d + f_reg[rs2].d;
-	PC += 4;
-	return true;
-}
-bool FSUB_D(uint rs1, uint rs2, uint rd)
-{
-	f_reg[rd].d = f_reg[rs1].d - f_reg[rs2].d;
-	PC += 4;
-	return true;
-}
-bool FMUL_D(uint rs1, uint rs2, uint rd)
-{
-	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d;
-	PC += 4;
-	return true;
-}
-bool FDIV_D(uint rs1, uint rs2, uint rd)
-{
-	f_reg[rd].d = f_reg[rs1].d / f_reg[rs2].d;
-	PC += 4;
-	return true;
-}
-bool FSQRT_D(uint rs1, uint rd)
-{
-	f_reg[rd].d = sqrt(f_reg[rs1].d);
-	PC += 4;
-	return true;
-}
-bool FCVT_S_D(uint rs1, uint rd)
-{
-
-	f_reg[rd].f[0] = (float) f_reg[rs1].d;
-	f_reg[rd].f[1] = 0;
-	PC += 4;
-	return true;
-}
-bool FCVT_D_S(uint rs1, uint rd)
-{
-
-	f_reg[rd].d = (double) f_reg[rs1].f[0];
-	PC += 4;
-	return true;
-}
-bool FEQ_D(uint rs1, uint rs2, uint rd)
-{
-	reg[rd] = (fabs(f_reg[rs1].d - f_reg[rs2].d)) < 1e-9? 1 : 0;
-	PC += 4;
-	return true;
-}
-bool FLT_D(uint rs1, uint rs2, uint rd)
-{
-	reg[rd] = f_reg[rs1].d < f_reg[rs2].d? 1 : 0;
-	PC += 4;
-	return true;
-}
-bool FLE_D(uint rs1, uint rs2, uint rd)
-{
-	if(f_reg[rs1].d < f_reg[rs2].d || (fabs(f_reg[rs1].d - f_reg[rs2].d) < 1e-10))
-		reg[rd] = 1;
-	else
-		reg[rd] = 0;
-	PC += 4;
-	return true;
-}
-bool FCVT_W_D(uint rs1, uint rd)
-{
-	reg[rd] = (int) f_reg[rs1].d;
-	PC += 4;
-	return true;
-}
-bool FCVT_WU_D(uint rs1, uint rd)
-{
-	reg[rd] = (uint) f_reg[rs1].d;
-	PC += 4;
-	return true;
-}
-bool FCVT_D_W(uint rs1, uint rd)
-{
-	f_reg[rd].d = (double) f_reg[rs1].d;
-	PC += 4;
-	return true;
-}
-bool FCVT_D_WU(uint rs1, uint rd)
-{
-	f_reg[rd].d = (double) (ulint)f_reg[rs1].d;
-	PC += 4;
-	return true;
-}
-
-
-
 
 void print_type(const char *str)
 {
@@ -249,114 +22,38 @@ void print_pc()
 
 bool LUI(uint rd, uint imm)
 {
-	#ifdef DEBUG
-	print_type("LUI");
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-
-
-	int temp = imm << 12;
-
-	//signed extended;
-	reg[rd] = (lint)temp;
+	reg[rd] = signExtend(imm, 20);
 	PC += 4;
-
-
-
-	#ifdef DEBUG
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-
 	return true;
 }
 
 bool AUIPC(uint rd, uint imm)
 {
-	#ifdef DEBUG
-	print_type("AUIPC");
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-
-
-
-	int temp = imm << 12;
-	lint temp2 = (lint)temp;
-	// PC += temp2;
-	reg[rd] = (lint)(PC + temp2);
+	reg[rd] = PC + signExtend(imm, 20);
 	PC += 4;
-
-
-
-	#ifdef DEBUG
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-
 	return true;
 }
 
 bool JAL(uint rd, uint imm)
 {	
-	#ifdef DEBUG
-	print_type("JAL");
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-
-
-
 	if(rd != 0)
 	{
-		reg[rd] = (lint)(PC + 4);
+		reg[rd] = PC + 4;
 	}
 	//[20,1]
-	PC += ((int)imm << 11) >> 11;
-
-
-
-	#ifdef DEBUG
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-
+	PC += signExtend(imm, 21);
 	return true;
 }
 bool JALR(uint rd, uint rs1, uint imm)
 {
-	#ifdef DEBUG
-	print_type("JALR");
-	print_reg(rd);
-	print_reg(rs1);
-	print_pc();
-	printf("\n");
-	#endif
-
 
 	ulint temp = PC;
 	//[11,0]
-	PC = ((reg[rs1] + (((int)imm << 20) >> 20)) >> 1) << 1;
+	PC = ((reg[rs1] + signExtend(imm, 12)) >> 1) << 1;
 	if(rd != 0)
 	{
-		reg[rd] = (lint)(temp + 4);
+		reg[rd] = temp + 4;
 	}
-
-
-	#ifdef DEBUG
-	print_reg(rd);
-	print_reg(rs1);
-	print_pc();
-	printf("\n");
-	#endif
-
 	return true;
 }
 
@@ -365,165 +62,51 @@ bool JALR(uint rd, uint rs1, uint imm)
 
 bool BEQ(uint rs1, uint rs2, uint imm)
 {
-	#ifdef DEBUG
-	print_type("BEQ");
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-
-
 	if(reg[rs1] == reg[rs2])
-		PC += ((int)imm << 19) >> 19;
+		PC += signExtend(imm, 13);
 	else
 		PC += 4;
-
-
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
 	return true;
 }
 bool BNE(uint rs1, uint rs2, uint imm)
 {
-	#ifdef DEBUG
-	print_type("BNE");
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-
-
-
 	if(reg[rs1] != reg[rs2])
-		PC += ((int)imm << 19) >> 19;
+		PC += signExtend(imm, 13);
 	else
 		PC += 4;
-
-
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-	
 	return true;
 }
 bool BLT(uint rs1, uint rs2, uint imm)
 {
-	#ifdef DEBUG
-	print_type("BLT");
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-	
-
-
-	if(reg[rs1] < reg[rs2])
-		PC += ((int)imm << 19) >> 19;
+	if((lint)reg[rs1] < (lint)reg[rs2])
+		PC += signExtend(imm, 13);
 	else
 		PC += 4;
-	
-
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
 	return true;
 }
 bool BGE(uint rs1, uint rs2, uint imm)
 {
-	#ifdef DEBUG
-	print_type("BGE");
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-	
-
-	if(reg[rs1] >= reg[rs2])
-		PC += ((int)imm << 19) >> 19;
+	if((lint)reg[rs1] >= (lint)reg[rs2])
+		PC += signExtend(imm, 13);
 	else
 		PC += 4;
-	
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-	
 	return true;
 }
 bool BLTU(uint rs1, uint rs2, uint imm)
 {
-	#ifdef DEBUG
-	print_type("BLTU");
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-	
-
-	
-	if((ulint)(reg[rs1]) < (ulint)(reg[rs2]))
-		PC += ((int)imm << 19) >> 19;
+	if(reg[rs1] < reg[rs2])
+		PC += signExtend(imm, 13);
 	else
 		PC += 4;
-	
-
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
 	
 	return true;
 }
 bool BGEU(uint rs1, uint rs2, uint imm)
 {
-	#ifdef DEBUG
-	print_type("BGEU");
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-	
-
-
-	if((ulint)(reg[rs1]) >= (ulint)(reg[rs2]))
-		PC += ((int)imm << 19) >> 19;
+	if(reg[rs1] >= reg[rs2])
+		PC += signExtend(imm, 13);
 	else
 		PC += 4;
-	
-
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rs2);
-	print_pc();
-	printf("\n");
-	#endif
-	
 	return true;
 }
 
@@ -532,147 +115,121 @@ bool BGEU(uint rs1, uint rs2, uint imm)
 
 bool LB(uint rs1, uint rd, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	reg[rd] = (lint)(char)(vm[target_addr]);
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 1\n", target_addr);
+	reg[rd] = signExtend64(readMem(target_addr, 1), 8);
 	PC += 4;
 	return true;
 }
 
 bool LBU(uint rs1, uint rd, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	reg[rd] = (lint)(ulint)(vm[target_addr]);
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 2\n", target_addr);
+	
+	reg[rd] = readMem(target_addr, 1);
 	PC += 4;
 	return true;
 }
 //first size, next sign
 bool LH(uint rs1, uint rd, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	short int * p = (short int *)(vm + target_addr);
-	reg[rd] = (lint)(*p);
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 3\n", target_addr);
+	reg[rd] = signExtend64(readMem(target_addr, 2), 16) ;
 	PC += 4;
 	return true;
 }
 bool LHU(uint rs1, uint rd, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	unsigned short int * p = (unsigned short int *)(vm + target_addr);
-	reg[rd] = (lint)(ulint)(*p);
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 4\n", target_addr);
+	reg[rd] = readMem(target_addr, 2);
 	PC += 4;
 	return true;
 }
 bool LW(uint rs1, uint rd, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	int * p = (int *)(vm + target_addr);
-	reg[rd] = (lint)(*p);
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 5\n", target_addr);
+	reg[rd] = signExtend64(readMem(target_addr, 4), 32) ;
 	PC += 4;
 	return true;
 }
 bool LWU(uint rs1, uint rd, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	unsigned int * p = (unsigned int *)(vm + target_addr);
-	reg[rd] = (lint)(ulint)(*p);
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 6\n", target_addr);
+	reg[rd] = readMem(target_addr, 4);
 	PC += 4;
 	return true;		
 }
 bool LD(uint rs1, uint rd, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	lint * p = (lint *)(vm + target_addr);
-	reg[rd] = (*p);
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 7\n", target_addr);
+	reg[rd] = signExtend64(readMem(target_addr, 8), 64);
 	PC += 4;
 	return true;
 }
 
 
+
 bool SB(uint rs1, uint rs2, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	vm[target_addr] = (uchar)(reg[rs2] & ((1 << 8) - 1)); 
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 8\n", target_addr);
+	writeMem(target_addr, reg[rs2] & 0xff, 1); 
 	PC += 4;
 	return true;
 }
 bool SH(uint rs1, uint rs2, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	unsigned short int *p = (unsigned short int *)(vm + target_addr);
-	*p = (unsigned short int)(reg[rs2] & ((1 << 16) - 1)); 
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x 9\n", target_addr);
+	writeMem(target_addr, reg[rs2] & 0xffff, 2); 
 	PC += 4;
 	return true;
 }
 bool SW(uint rs1, uint rs2, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	unsigned int *p = (unsigned int *)(vm + target_addr);
-	*p = (unsigned int)(reg[rs2] & (((ulint)1 << 32) - 1)); 
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x a\n", target_addr);
+	writeMem(target_addr, reg[rs2] & 0xffffffff, 4); 
 	PC += 4;
 	return true;
 }
 bool SD(uint rs1, uint rs2, uint imm)
 {
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	ulint *p = (ulint *)(vm + target_addr);
-	*p = (ulint)reg[rs2]; 
+	ulint target_addr = (lint)reg[rs1] + signExtend(imm, 12);
+	printf("%x b\n", target_addr);
+	writeMem(target_addr, reg[rs2] & 0xffffffffffffffff, 8); 
 	PC += 4;
-	return true;	
+	return true;
 }
 
 
 
 bool ADDI(uint rs1, uint rd, uint imm)
 {
-	#ifdef DEBUG
-	print_type("ADDI");
-	print_reg(rs1);
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-	
-	int simm = (int)imm;
-	reg[rd] = reg[rs1] + (lint)((simm << 20) >> 20);
+	printf("%lld\n", reg[rd]);
+	reg[rd] = reg[rs1] + signExtend(imm, 12);
+	printf("%lld\n", reg[rd]);
+
 	PC += 4;	
-
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
 	return true;
 }
 bool ADDIW(uint rs1, uint rd, uint imm)
 {
-	#ifdef DEBUG
-	print_type("ADDIW");
-	print_reg(rs1);
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
-
-
-	int simm = (int)imm;
-	int temp = (int)reg[rs1] + ((simm << 20) >> 20);
+	int temp = (int)reg[rs1] + (int)signExtend(imm, 12);
 	reg[rd] = (lint)temp;
 	PC += 4;
-	
-
-	#ifdef DEBUG
-	print_reg(rs1);
-	print_reg(rd);
-	print_pc();
-	printf("\n");
-	#endif
 	return true;
 }
+
 bool SLTI(uint rs1, uint rd, uint imm)
 {
-	if(reg[rs1] < (lint)(((int)imm << 20) >> 20))
+	if((lint)reg[rs1] < signExtend(imm, 12))
 		reg[rd] = 1;
 	else
 		reg[rd] = 0;
@@ -681,7 +238,7 @@ bool SLTI(uint rs1, uint rd, uint imm)
 }
 bool SLTIU(uint rs1, uint rd, uint imm)
 {
-	if((ulint)reg[rs1] < (ulint)(((int)imm << 20) >> 20))
+	if(reg[rs1] < (ulint)signExtend(imm, 12))
 		reg[rd] = 1;
 	else
 		reg[rd] = 0;
@@ -694,19 +251,19 @@ bool SLTIU(uint rs1, uint rd, uint imm)
 
 bool XORI(uint rs1, uint rd, uint imm)
 {
-	reg[rd] = reg[rs1] ^ (lint)(((int)imm << 20) >> 20);
+	reg[rd] = reg[rs1] ^ signExtend(imm, 12);
 	PC += 4;	
 	return true;
 }
 bool ORI(uint rs1, uint rd, uint imm)
 {
-	reg[rd] = reg[rs1] | (lint)(((int)imm << 20) >> 20);
+	reg[rd] = reg[rs1] | signExtend(imm, 12);
 	PC += 4;	
 	return true;
 }
 bool ANDI(uint rs1, uint rd, uint imm)
 {
-	reg[rd] = reg[rs1] & (lint)(((int)imm << 20) >> 20);
+	reg[rd] = reg[rs1] & signExtend(imm, 12);
 	PC += 4;	
 	return true;
 }
@@ -716,20 +273,20 @@ bool ANDI(uint rs1, uint rd, uint imm)
 
 bool SLLI(uint rs1, uint rd, uint shamt)
 {
-	reg[rd] = (ulint)reg[rs1] << shamt;
+	reg[rd] = reg[rs1] << shamt;
 	PC += 4;
 	return true;
 }
 bool SLLIW(uint rs1, uint rd, uint shamt)
 {
-	int temp = (int)reg[rs1] << shamt;
+	int temp = (uint)reg[rs1] << shamt;
 	reg[rd] = (lint)temp;
 	PC += 4;
 	return true;
 }
 bool SRLI(uint rs1, uint rd, uint shamt)
 {
-	reg[rd] = (ulint)reg[rs1] >> shamt;
+	reg[rd] = reg[rs1] >> shamt;
 	PC += 4;
 	return true;
 }
@@ -742,7 +299,7 @@ bool SRLIW(uint rs1, uint rd, uint shamt)
 }
 bool SRAI(uint rs1, uint rd, uint shamt)
 {
-	reg[rd] = reg[rs1] >> shamt;
+	reg[rd] = (lint)reg[rs1] >> shamt;
 	PC += 4;
 	return true;
 }
@@ -760,7 +317,7 @@ bool SRAIW(uint rs1, uint rd, uint shamt)
 
 bool ADD(uint rs1, uint rs2, uint rd)
 {
-	reg[rd] = reg[rs1] + reg[rs2];
+	reg[rd] = (lint)reg[rs1] + (lint)reg[rs2];
 	PC += 4;
 	return true;
 }
@@ -775,7 +332,7 @@ bool ADDW(uint rs1, uint rs2, uint rd)
 
 bool SUB(uint rs1, uint rs2, uint rd)
 {
-	reg[rd] = reg[rs1] - reg[rs2];
+	reg[rd] = (lint)reg[rs1] - (lint)reg[rs2];
 	PC += 4;
 	return true;
 }
@@ -805,7 +362,7 @@ bool SLLW(uint rs1, uint rs2, uint rd)
 
 bool SLT(uint rs1, uint rs2, uint rd)
 {
-	if(reg[rs1] < reg[rs2])
+	if((lint)reg[rs1] < (lint)reg[rs2])
 		reg[rd] = 1;
 	else
 		reg[rd] = 0;
@@ -886,7 +443,7 @@ bool MUL(uint rs1, uint rs2, uint rd)
 
 	//lint temp = reg[rs1] * reg[rs2];
 	//reg[rd] = temp & (((ulint)1 << 32) - 1);
-	reg[rd] = reg[rs1] * reg[rs2];
+	reg[rd] = (lint)reg[rs1] * (lint)reg[rs2];
 
 	PC += 4;
 	return true;
@@ -900,7 +457,7 @@ bool MULH(uint rs1, uint rs2, uint rd)
 }
 bool MULHSU(uint rs1, uint rs2, uint rd)
 {
-	lint temp = (ulint)reg[rs1] * reg[rs2];
+	lint temp = (lint)reg[rs1] * reg[rs2];
 	reg[rd] = (temp >> 32) & (((ulint)1 << 32) - 1);
 	PC += 4;
 	return true;
@@ -915,7 +472,7 @@ bool MULHU(uint rs1, uint rs2, uint rd)
 
 bool DIV(uint rs1, uint rs2, uint rd)
 {
-	lint temp = reg[rs1] / reg[rs2];
+	lint temp = (lint)reg[rs1] / (lint)reg[rs2];
 	reg[rd] = temp;
 	PC += 4;
 	return true;
@@ -929,7 +486,7 @@ bool DIVU(uint rs1, uint rs2, uint rd)
 }
 bool REM(uint rs1, uint rs2, uint rd)
 {
-	lint temp = reg[rs1] % reg[rs2];
+	lint temp = (lint)reg[rs1] % (lint)reg[rs2];
 	reg[rd] = temp;
 	PC += 4;
 	return true;	
@@ -988,7 +545,7 @@ bool ECALL(bool &EXIT)
 	lint a4 = reg[reg_a4];
 	lint a5 = reg[reg_a5];
 	int ret;
-	int cnt_brk = 0;
+	static int cnt_brk = 0;
 	switch(reg[reg_sys_num])
 	{
 		//SYS_close
@@ -1035,7 +592,7 @@ bool ECALL(bool &EXIT)
 			// int ret = syscall(SYS_fstat, (int)a0, (void *)a1, (size_t)a2);
 			reg[reg_a0] = (lint)ret;
 			// reg[reg_a0] = 1;
-			printf("SYS_fstat ret: %d\n", ret);
+			// printf("SYS_fstat ret: %d\n", ret);
 			break;
 
 
@@ -1080,6 +637,13 @@ bool ECALL(bool &EXIT)
 	return true;
 }
 
+
+
+
+
+
+
+
 //F instruction below
 // bool FLW(uint rs1, uint imm, uint rd)
 // {
@@ -1098,53 +662,331 @@ bool ECALL(bool &EXIT)
 // 	PC += 4;
 // 	return true;
 // }
-bool FLW(uint rs1, uint imm, uint rd)
-{
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	float *p = (float *)(vm + target_addr);
-	f_reg[rd].f[0] = (float)(*p);
-	PC += 4;
-	return true;
-}
+// bool FLW(uint rs1, uint imm, uint rd)
+// {
+// 	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
+// 	float *p = (float *)(vm + target_addr);
+// 	f_reg[rd].f[0] = (float)(*p);
+// 	PC += 4;
+// 	return true;
+// }
 
-bool FSW(uint rs1, uint rs2, uint imm)
-{
-	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
-	float *p = (float *)(vm + target_addr);
-	*p = f_reg[rs2].f[0];
-	PC += 4;
-	return true;
-}
+// bool FSW(uint rs1, uint rs2, uint imm)
+// {
+// 	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
+// 	float *p = (float *)(vm + target_addr);
+// 	*p = f_reg[rs2].f[0];
+// 	PC += 4;
+// 	return true;
+// }
 
-bool FMUL_S(uint rs1, uint rs2, uint rd)
-{
-	float temp = f_reg[rs1].f[0] * f_reg[rs2].f[0];
-	f_reg[rd].f[0] = temp;
-	PC += 4;
-	return true;
-}
+// bool FMUL_S(uint rs1, uint rs2, uint rd)
+// {
+// 	float temp = f_reg[rs1].f[0] * f_reg[rs2].f[0];
+// 	f_reg[rd].f[0] = temp;
+// 	PC += 4;
+// 	return true;
+// }
 
-bool FDIV_S(uint rs1, uint rs2, uint rd)
-{
-	float temp = f_reg[rs1].f[0] / f_reg[rs2].f[0];
-	f_reg[rd].f[0] = temp;
-	PC += 4;
-	return true;
-}
+// bool FDIV_S(uint rs1, uint rs2, uint rd)
+// {
+// 	float temp = f_reg[rs1].f[0] / f_reg[rs2].f[0];
+// 	f_reg[rd].f[0] = temp;
+// 	PC += 4;
+// 	return true;
+// }
 
-bool FCVT_S_W(uint rs1, uint rd)
-{
-	f_reg[rd].f[0] = float(reg[rd]&0xffffffff);
-	PC += 4;
-	return true;
-}
+// bool FCVT_S_W(uint rs1, uint rd)
+// {
+// 	// f_reg[rd].f[0] = float(reg[rs1]&0xffffffff);
+// 	f_reg[rd].f[0] = (float)(int)reg[rs1];
 
-bool FCVT_S_L(uint rs1, uint rd)
-{
-	f_reg[rd].f[0] = float(reg[rd]);
-	PC += 4;
-	return true;
-}
+// 	PC += 4;
+// 	return true;
+// }
+
+// bool FCVT_S_L(uint rs1, uint rd)
+// {
+// 	f_reg[rd].f[0] = (float)(lint)reg[rs1];
+// 	PC += 4;
+// 	return true;
+// }
+
+
+
+// bool sym = false;
+// //here is double floating point function
+// bool FSGNJ_D(uint rs1, uint rs2, uint rd)
+// {
+// 	double temp1 = f_reg[rs1].d;
+// 	double temp2 = f_reg[rs2].d;
+// 	if(temp2 < 0)
+// 	{
+// 		if(temp1 < 0)
+// 			f_reg[rd].d = temp1;
+// 		else
+// 			f_reg[rd].d = -temp1;
+// 	}
+// 	else
+// 	{
+// 		if(temp1 < 0)
+// 			f_reg[rd].d = -temp1;
+// 		else
+// 			f_reg[rd].d = temp1;
+// 	}
+// 	PC += 4;
+// 	return true;
+// }
+// bool FSGNJN_D(uint rs1, uint rs2, uint rd)
+// {
+// 	double temp1 = f_reg[rs1].d;
+// 	double temp2 = f_reg[rs2].d;
+// 	if(temp2 < 0)
+// 	{
+// 		if(temp1 < 0)
+// 			f_reg[rd].d = -temp1;
+// 		else
+// 			f_reg[rd].d = temp1;
+// 	}
+// 	else
+// 	{
+// 		if(temp1 < 0)
+// 			f_reg[rd].d = temp1;
+// 		else
+// 			f_reg[rd].d = -temp1;
+// 	}
+// 	PC += 4;
+// 	return true;
+// }
+// bool FSGNJX_D(uint rs1, uint rs2, uint rd)
+// {
+// 	double temp1 = f_reg[rs1].d;
+// 	double temp2 = f_reg[rs2].d;
+// 	if(temp2 < 0)
+// 	{
+// 		if(temp1 < 0)
+// 			f_reg[rd].d = -temp1;
+// 		else
+// 			f_reg[rd].d = -temp1;
+// 	}
+// 	else
+// 	{
+// 		if(temp1 < 0)
+// 			f_reg[rd].d = temp1;
+// 		else
+// 			f_reg[rd].d = temp1;
+// 	}
+// 	PC += 4;
+// 	return true;
+// }
+// bool FMV_X_D(uint rs1, uint rd)
+// {
+// 	reg[rd] = (lint)f_reg[rs1].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FMV_D_X(uint rs1, uint rd)
+// {
+// 	f_reg[rd].d = (double)reg[rs1];
+// 	PC += 4;
+// 	return true; 
+// }
+
+// // bool FLD(uint rs1, uint imm, uint rd)
+// // {
+// // 	ulint target_addr = f_reg[rs1].d + (int)imm;
+// // 	double * p = (double *)(vm + target_addr);
+// // 	f_reg[rd].d = (*p);
+// // 	PC += 4;
+// // 	return true;
+
+// // }
+// // bool FSD(uint rs1, uint imm, uint rs2)
+// // {
+// // 	ulint target_addr = f_reg[rs1].d + (int)imm;
+// // 	double *p = (double *)(vm + target_addr);
+// // 	*p = f_reg[rs2].d; 
+// // 	PC += 4;
+// // 	return true;
+// // }
+
+// union F64
+// {
+// 	double y;
+// 	unsigned char t[8];
+// };
+
+
+// bool FLD(uint rs1, uint imm, uint rd)
+// {
+// 	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
+// 	double * p = (double *)(vm + target_addr);
+// 	f_reg[rd].d = (*p);
+	
+// 	// printf("FLD %lf\n", f_reg[rd].d);
+
+// 	// for(int i = 0; i < 8; i++)
+// 	// {
+// 	// 	printf("%0x ", vm[target_addr + i]);
+// 	// }
+// 	// printf("\n");
+	
+// 	// F64 * p = (F64 *)(vm + target_addr);
+	
+// 	// F64 p;
+// 	// for(int i = 0; i < 8; i++)
+// 	// {
+// 	// 	p.t[i] = vm[target_addr + i];
+// 	// }
+// 	// f_reg[rd].d = p.y;
+	
+// 	// printf("%lf\n", f_reg[rd].d);
+// 	// for(int i = 0; i < 8; i++)
+// 	// {
+// 	// 	printf("%0x ", vm[target_addr + i]);
+// 	// }
+// 	// printf("\n");
+	
+
+
+// 	PC += 4;
+// 	return true;
+
+
+// 	// ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
+// 	// lint * p = (lint *)(vm + target_addr);
+// 	// reg[rd] = (*p);
+// 	// PC += 4;
+// 	// return true;
+// }
+// bool FSD(uint rs1, uint imm, uint rs2)
+// {
+// 	ulint target_addr = reg[rs1] + (((int)imm << 20) >> 20);
+// 	double *p = (double *)(vm + target_addr);
+// 	*p = f_reg[rs2].d;
+// 	// printf("FSD %lf\n", f_reg[rs2].d);
+// 	PC += 4;
+
+// 	sym = true;
+	
+
+// 	return true;
+// }
+// bool FMADD_D(uint rs1, uint rs2, uint rs3, uint rd)
+// {
+// 	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d + f_reg[rs3].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FMSUB_D(uint rs1, uint rs2, uint rs3, uint rd)
+// {
+// 	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d - f_reg[rs3].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FNMSUB_D(uint rs1, uint rs2, uint rs3, uint rd)
+// {
+// 	f_reg[rd].d = -(f_reg[rs1].d * f_reg[rs2].d - f_reg[rs3].d);
+// 	PC += 4;
+// 	return true;
+// }
+// bool FNMADD_D(uint rs1, uint rs2, uint rs3, uint rd)
+// {
+// 	f_reg[rd].d = -(f_reg[rs1].d * f_reg[rs2].d + f_reg[rs3].d);
+// 	PC += 4;
+// 	return true;
+// }
+// bool FADD_D(uint rs1, uint rs2, uint rd)
+// {
+// 	f_reg[rd].d = f_reg[rs1].d + f_reg[rs2].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FSUB_D(uint rs1, uint rs2, uint rd)
+// {
+// 	f_reg[rd].d = f_reg[rs1].d - f_reg[rs2].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FMUL_D(uint rs1, uint rs2, uint rd)
+// {
+// 	f_reg[rd].d = f_reg[rs1].d * f_reg[rs2].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FDIV_D(uint rs1, uint rs2, uint rd)
+// {
+// 	f_reg[rd].d = f_reg[rs1].d / f_reg[rs2].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FSQRT_D(uint rs1, uint rd)
+// {
+// 	f_reg[rd].d = sqrt(f_reg[rs1].d);
+// 	PC += 4;
+// 	return true;
+// }
+// bool FCVT_S_D(uint rs1, uint rd)
+// {
+
+// 	f_reg[rd].f[0] = (float) f_reg[rs1].d;
+// 	f_reg[rd].f[1] = 0;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FCVT_D_S(uint rs1, uint rd)
+// {
+
+// 	f_reg[rd].d = (double) f_reg[rs1].f[0];
+// 	PC += 4;
+// 	return true;
+// }
+// bool FEQ_D(uint rs1, uint rs2, uint rd)
+// {
+// 	reg[rd] = (fabs(f_reg[rs1].d - f_reg[rs2].d)) < 1e-9? 1 : 0;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FLT_D(uint rs1, uint rs2, uint rd)
+// {
+// 	reg[rd] = f_reg[rs1].d < f_reg[rs2].d? 1 : 0;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FLE_D(uint rs1, uint rs2, uint rd)
+// {
+// 	if(f_reg[rs1].d < f_reg[rs2].d || (fabs(f_reg[rs1].d - f_reg[rs2].d) < 1e-10))
+// 		reg[rd] = 1;
+// 	else
+// 		reg[rd] = 0;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FCVT_W_D(uint rs1, uint rd)
+// {
+// 	reg[rd] = (int) f_reg[rs1].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FCVT_WU_D(uint rs1, uint rd)
+// {
+// 	reg[rd] = (uint) f_reg[rs1].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FCVT_D_W(uint rs1, uint rd)
+// {
+// 	f_reg[rd].d = (double) f_reg[rs1].d;
+// 	PC += 4;
+// 	return true;
+// }
+// bool FCVT_D_WU(uint rs1, uint rd)
+// {
+// 	f_reg[rd].d = (double) (ulint)f_reg[rs1].d;
+// 	PC += 4;
+// 	return true;
+// }
+
 
 
 

@@ -1,4 +1,4 @@
-CPPFLAGS = -Wall -O3 -std=c++11 -w -lm
+CPPFLAGS = -Wall -O1 -std=c++11 -w -lm
 PROGRAMS = main 
 
 all: $(PROGRAMS)
